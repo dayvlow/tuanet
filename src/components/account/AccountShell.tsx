@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import Link from "next/link";
+import { X } from "lucide-react";
 import { Sidebar } from "@/components/account/Sidebar";
 import { Topbar } from "@/components/account/Topbar";
 import { buttonVariants } from "@/components/ui/Button";
@@ -41,11 +42,11 @@ export function AccountShell({ title, description, primaryAction, children, quic
                             <div className="text-xl font-black uppercase italic">ТУАНЕТ</div>
                             <button
                                 type="button"
-                                className="h-10 w-10 rounded-full border-2 border-black/20 text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-black/20 text-black transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                 onClick={() => setIsMenuOpen(false)}
                                 aria-label="Закрыть меню"
                             >
-                                ×
+                                <X className="h-5 w-5" strokeWidth={3} />
                             </button>
                         </div>
                         <div className="mt-6">

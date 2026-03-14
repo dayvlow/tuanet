@@ -21,13 +21,14 @@ export default async function PlatformDownloadPage({
     const platformData: Record<string, { title: string; subtitle: string; version: string; size: string; requirements: string[]; downloadUrl: string; storeLabel?: string; steps: Array<{ title: string; text: string }>; issues: Array<{ q: string; a: string }> }> = {
         windows: {
             title: "Туанет для Windows",
-            subtitle: "Установка за пару минут. Если мешает антивирус или права, ниже есть инструкции.",
+            subtitle: "Получить установщик можно через поддержку. Ниже есть быстрые шаги запуска.",
             version: "v2.4.1",
             size: "64 МБ",
             requirements: ["Windows 10/11", "4 ГБ RAM", "100 МБ свободного места"],
-            downloadUrl: "https://downloads.tuaanet.com/windows/tuaanet-setup.exe",
+            downloadUrl: "/help#contact",
+            storeLabel: "Получить установщик",
             steps: [
-                { title: "Скачай установщик", text: "Скачивание начинается сразу. Если нет — нажми «Скачать» ещё раз." },
+                { title: "Получи установщик", text: "Открой поддержку и запроси актуальную ссылку на установщик." },
                 { title: "Запусти файл и заверши установку", text: "Разреши установку, если система спросит." },
                 { title: "Открой приложение и войди в аккаунт", text: "Используй email, который указан при оплате." },
                 { title: "Нажми «Подключить»", text: "Готово. Сервис активен." }
@@ -40,12 +41,12 @@ export default async function PlatformDownloadPage({
         },
         ios: {
             title: "Туанет для iOS",
-            subtitle: "Скачай из App Store, войди и подключись.",
+            subtitle: "Запроси актуальную ссылку через поддержку, затем войди и подключись.",
             version: "v2.4.1",
             size: "48 МБ",
             requirements: ["iOS 16+", "Свободное место 100 МБ"],
-            downloadUrl: "https://apps.apple.com/app/id0000000000",
-            storeLabel: "Скачать в App Store",
+            downloadUrl: "/help#contact",
+            storeLabel: "Получить ссылку для iPhone",
             steps: [
                 { title: "Установи приложение", text: "Перейди в App Store и нажми «Загрузить»." },
                 { title: "Открой и войди в аккаунт", text: "Используй email, указанный при оплате." },
@@ -61,12 +62,12 @@ export default async function PlatformDownloadPage({
         },
         android: {
             title: "Туанет для Android",
-            subtitle: "Установка из Google Play и быстрый старт.",
+            subtitle: "Запроси актуальную ссылку через поддержку и установи приложение без лишней ручной настройки.",
             version: "v2.4.1",
             size: "52 МБ",
             requirements: ["Android 10+", "Свободное место 120 МБ"],
-            downloadUrl: "https://play.google.com/store/apps/details?id=com.tuaanet.app",
-            storeLabel: "Скачать в Google Play",
+            downloadUrl: "/help#contact",
+            storeLabel: "Получить ссылку для Android",
             steps: [
                 { title: "Установи приложение", text: "Перейди в Google Play и нажми «Установить»." },
                 { title: "Войди в аккаунт", text: "Используй email, который указан при оплате." },

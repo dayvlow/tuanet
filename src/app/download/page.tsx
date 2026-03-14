@@ -86,16 +86,16 @@ export default function Download() {
                         </Link>
                     </Card>
                     <Card variant="outline" className="p-8 border-white/15">
-                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Нет подписки?</h3>
-                        <p className="text-lg text-white/60 mb-6">Сначала выбери срок и оплати, потом вернись к установке.</p>
+                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Нужна помощь?</h3>
+                        <p className="text-lg text-white/60 mb-6">Если установка или вход не работают как ожидается, напиши в поддержку.</p>
                         <Link
-                            href="/pricing"
+                            href="/help#contact"
                             className={cn(
                                 buttonVariants({ variant: "outline", size: "lg" }),
                                 "h-14 px-8 rounded-3xl uppercase tracking-widest text-sm font-bold border-2"
                             )}
                         >
-                            Выбрать тариф
+                            Написать в поддержку
                         </Link>
                     </Card>
                 </div>

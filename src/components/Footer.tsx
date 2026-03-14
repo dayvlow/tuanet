@@ -1,7 +1,5 @@
 import Link from "next/link";
 
-import { Button } from "./ui/Button";
-
 export default function Footer() {
     return (
         <footer className="bg-black text-white pt-24 pb-12 border-t border-white/10">
@@ -12,7 +10,7 @@ export default function Footer() {
                             Туанет
                         </Link>
                         <p className="text-white/60 text-lg leading-relaxed max-w-xs">
-                            Подключился и поехал. Управляй подпиской и устройствами в одном месте.
+                            Подключился и поехал. Управляй ключами, безопасностью и устройствами в одном месте.
                         </p>
                         <div className="text-sm text-white/50">
                             Поддержка: <a href="mailto:support@tuaanet.com" className="text-white hover:text-brand transition-colors">support@tuaanet.com</a>
@@ -24,7 +22,6 @@ export default function Footer() {
                         <h4 className="text-xs font-bold uppercase tracking-widest text-white/40">Продукт</h4>
                         <ul className="space-y-4">
                             <li><Link href="/" className="text-xl font-bold hover:text-brand transition-colors">Главная</Link></li>
-                            <li><Link href="/pricing" className="text-xl font-bold hover:text-brand transition-colors">Тарифы</Link></li>
                             <li><Link href="/download" className="text-xl font-bold hover:text-brand transition-colors">Скачать</Link></li>
                             <li><Link href="/help" className="text-xl font-bold hover:text-brand transition-colors">Помощь</Link></li>
                         </ul>
@@ -35,9 +32,9 @@ export default function Footer() {
                         <h4 className="text-xs font-bold uppercase tracking-widest text-white/40">Кабинет</h4>
                         <ul className="space-y-4">
                             <li><Link href="/account" className="text-xl font-bold hover:text-brand transition-colors">Войти</Link></li>
-                            <li><Link href="/account/subscription" className="text-xl font-bold hover:text-brand transition-colors">Подписка</Link></li>
-                            <li><Link href="/account/devices" className="text-xl font-bold hover:text-brand transition-colors">Устройства</Link></li>
-                            <li><Link href="/account/payments" className="text-xl font-bold hover:text-brand transition-colors">Платежи</Link></li>
+                            <li><Link href="/account/keys" className="text-xl font-bold hover:text-brand transition-colors">Ключи</Link></li>
+                            <li><Link href="/account/security" className="text-xl font-bold hover:text-brand transition-colors">Безопасность</Link></li>
+                            <li><Link href="/account/profile" className="text-xl font-bold hover:text-brand transition-colors">Профиль</Link></li>
                         </ul>
                     </div>
 

@@ -1,8 +1,11 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
+import { accountBalanceFixture } from "@/lib/account-fixtures";
+import { Modal } from "@/components/account/Modal";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface TopbarProps {
     title: string;
@@ -14,6 +17,8 @@ interface TopbarProps {
 
 export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
     const topbarRef = useRef<HTMLDivElement | null>(null);
+    const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
+    const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
     useEffect(() => {
         function setTopbarHeight() {
@@ -29,35 +34,96 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
     }, []);
 
     return (
-        <div ref={topbarRef} className="sticky top-0 z-30 w-full bg-black/80 backdrop-blur-xl">
-            <div className="border-b border-white/10">
-                <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-6 lg:px-10">
-                    <div className="flex items-center gap-4">
-                        <button
-                            type="button"
-                            className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/20 text-white lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-                            aria-label="Открыть меню"
-                            onClick={onMenuClick}
-                        >
-                            <Menu className="h-5 w-5" strokeWidth={2.5} />
-                        </button>
-                        <div>
-                            <Link
-                                href="/"
-                                className="-ml-1 inline-block text-3xl font-black uppercase italic tracking-tight text-white transition-colors hover:text-brand"
+        <>
+            <div ref={topbarRef} className="sticky top-0 z-30 w-full bg-black/80 backdrop-blur-xl">
+                <div className="border-b border-white/10">
+                    <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-6 lg:px-10">
+                        <div className="flex items-center gap-4">
+                            <button
+                                type="button"
+                                className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/20 text-white lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                                aria-label="Открыть меню"
+                                onClick={onMenuClick}
                             >
-                                ТУАНЕТ
-                            </Link>
+                                <Menu className="h-5 w-5" strokeWidth={2.5} />
+                            </button>
+                            <div>
+                                <Link
+                                    href="/"
+                                    className="-ml-1 inline-block text-3xl font-black uppercase italic tracking-tight text-white transition-colors hover:text-brand"
+                                >
+                                    ТУАНЕТ
+                                </Link>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        {extra}
-                        <div className="flex items-center rounded-full border-2 border-white/20 px-4 py-2 text-white">
-                            <span className="text-xs font-bold uppercase tracking-normal">{title}</span>
+                        <div className="flex items-center gap-4">
+                            {extra}
+                            <ThemeToggle />
+                            <button
+                                type="button"
+                                onClick={() => setIsBalanceModalOpen(true)}
+                                className="flex items-center rounded-full border-2 border-white/60 px-3 py-1.5 text-white transition hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:px-4 sm:py-2"
+                                aria-label={`Баланс аккаунта ${accountBalanceFixture.amount} ${accountBalanceFixture.currency}. Открыт раздел ${title}.`}
+                            >
+                                <span className="text-sm font-black tracking-tight sm:text-base lg:text-lg">
+                                    Баланс: {accountBalanceFixture.amount} {accountBalanceFixture.currency}
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <Modal
+                open={isBalanceModalOpen}
+                title="Пополнить баланс"
+                onClose={() => {
+                    setIsBalanceModalOpen(false);
+                    setSelectedMethod(null);
+                }}
+                size="sm"
+            >
+                <div className="grid gap-3">
+                    {[
+                        {
+                            title: "Банковская карта",
+                            description: "Visa, MasterCard, Мир. Пополнение за несколько секунд.",
+                        },
+                        {
+                            title: "СБП",
+                            description: "Мгновенный перевод через приложение банка без комиссии.",
+                        },
+                        {
+                            title: "Криптовалюта",
+                            description: "USDT и другие доступные сети для быстрого зачисления.",
+                        },
+                    ].map((method) => (
+                        <button
+                            key={method.title}
+                            type="button"
+                            onClick={() => setSelectedMethod(method.title)}
+                            className="rounded-[24px] border-2 border-black/10 bg-black/[0.03] px-5 py-4 text-left transition hover:border-brand/40 hover:bg-brand/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        >
+                            <div className="text-lg font-black uppercase tracking-tight">{method.title}</div>
+                            <div className="mt-1 text-sm text-black/60">{method.description}</div>
+                        </button>
+                    ))}
+                    {selectedMethod && (
+                        <div className="rounded-[24px] border-2 border-black/10 bg-black/[0.03] p-5">
+                            <div className="text-sm font-bold uppercase tracking-normal text-black/50">Выбран способ</div>
+                            <div className="mt-2 text-xl font-black uppercase tracking-tight">{selectedMethod}</div>
+                            <p className="mt-3 text-sm text-black/60">
+                                Для завершения пополнения перейди в поддержку. Там можно запросить актуальные реквизиты и подтверждение платежа.
+                            </p>
+                            <a
+                                href="mailto:support@tuaanet.com?subject=Пополнение%20баланса"
+                                className="mt-4 inline-flex rounded-full border-2 border-black/20 px-4 py-2 text-xs font-bold uppercase tracking-normal text-black transition hover:bg-black/5"
+                            >
+                                Связаться с поддержкой
+                            </a>
+                        </div>
+                    )}
+                </div>
+            </Modal>
+        </>
     );
 }

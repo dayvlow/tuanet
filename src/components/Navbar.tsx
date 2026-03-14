@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -74,6 +75,7 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <div className="flex items-center gap-4 ml-6">
+                            <ThemeToggle />
                             <Link
                                 href="/account"
                                 className={cn(
@@ -83,41 +85,35 @@ export default function Navbar() {
                             >
                                 Войти
                             </Link>
-                            <Link
-                                href="/pricing"
-                                className={cn(
-                                    buttonVariants({ variant: "brand", size: "sm" }),
-                                    "relative z-10 uppercase tracking-widest text-xs font-black shadow-[0_0_14px_rgba(249,115,22,0.28)] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
-                                )}
-                            >
-                                Выбрать тариф
-                            </Link>
                         </div>
                     </div>
 
-                    <button
-                        className="z-50 md:hidden flex flex-col gap-1.5 p-2 group"
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        aria-label="Открыть меню"
-                        aria-expanded={isMobileMenuOpen}
-                        aria-controls="mobile-menu"
-                    >
-                        <motion.span
-                            animate={isMobileMenuOpen ? { rotate: 45, y: 8, backgroundColor: "#F97316" } : { rotate: 0, y: 0, backgroundColor: "#ffffff" }}
-                            transition={shouldReduceMotion ? { duration: 0 } : undefined}
-                            className="w-8 h-1 bg-white block rounded-full transition-colors group-hover:bg-brand"
-                        />
-                        <motion.span
-                            animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-                            transition={shouldReduceMotion ? { duration: 0 } : undefined}
-                            className="w-8 h-1 bg-white block rounded-full transition-colors group-hover:bg-brand"
-                        />
-                        <motion.span
-                            animate={isMobileMenuOpen ? { rotate: -45, y: -8, backgroundColor: "#F97316" } : { rotate: 0, y: 0, backgroundColor: "#ffffff" }}
-                            transition={shouldReduceMotion ? { duration: 0 } : undefined}
-                            className="w-8 h-1 bg-white block rounded-full transition-colors group-hover:bg-brand"
-                        />
-                    </button>
+                    <div className="z-50 flex items-center gap-2 md:hidden">
+                        <ThemeToggle className="theme-toggle-mobile" />
+                        <button
+                            className="flex flex-col gap-1.5 p-2 group"
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-label="Открыть меню"
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="mobile-menu"
+                        >
+                            <motion.span
+                                animate={isMobileMenuOpen ? { rotate: 45, y: 8, backgroundColor: "#F97316" } : { rotate: 0, y: 0, backgroundColor: "#ffffff" }}
+                                transition={shouldReduceMotion ? { duration: 0 } : undefined}
+                                className="w-8 h-1 bg-white block rounded-full transition-colors group-hover:bg-brand"
+                            />
+                            <motion.span
+                                animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+                                transition={shouldReduceMotion ? { duration: 0 } : undefined}
+                                className="w-8 h-1 bg-white block rounded-full transition-colors group-hover:bg-brand"
+                            />
+                            <motion.span
+                                animate={isMobileMenuOpen ? { rotate: -45, y: -8, backgroundColor: "#F97316" } : { rotate: 0, y: 0, backgroundColor: "#ffffff" }}
+                                transition={shouldReduceMotion ? { duration: 0 } : undefined}
+                                className="w-8 h-1 bg-white block rounded-full transition-colors group-hover:bg-brand"
+                            />
+                        </button>
+                    </div>
                 </div>
             </motion.nav>
 
@@ -156,6 +152,9 @@ export default function Navbar() {
                             transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.4 }}
                             className="flex flex-col gap-6 mt-12 w-full max-w-sm"
                         >
+                            <div className="flex justify-center">
+                                <ThemeToggle />
+                            </div>
                             <Link
                                 href="/account"
                                 onClick={() => setIsMobileMenuOpen(false)}
@@ -165,16 +164,6 @@ export default function Navbar() {
                                 )}
                             >
                                 Войти
-                            </Link>
-                            <Link
-                                href="/pricing"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className={cn(
-                                    buttonVariants({ variant: "brand", size: "lg" }),
-                                    "w-full h-16 rounded-3xl justify-center uppercase tracking-widest text-lg font-bold shadow-[0_0_20px_rgba(249,115,22,0.4)]"
-                                )}
-                            >
-                                Выбрать тариф
                             </Link>
                         </motion.div>
                     </motion.div>

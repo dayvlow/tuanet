@@ -48,10 +48,10 @@ export default function Home() {
   const pinTrackHeight = `calc(100vh + ${Math.round(maxTranslate)}px + 40vh)`;
   const sectionGap = "py-20 md:py-28";
   const steps = [
-    { title: "Выбери тариф", desc: "Сразу видишь срок, цену и лимит устройств до оплаты." },
-    { title: "Скачай приложение", desc: "Ставишь версию под свою платформу и входишь в аккаунт." },
-    { title: "Войди в аккаунт", desc: "Доступ и подключенные устройства привязаны к профилю." },
-    { title: "План", desc: "Подключаешься и управляешь всем через личный кабинет." },
+    { title: "Скачай приложение", desc: "Выбираешь свою платформу и ставишь приложение без лишних шагов." },
+    { title: "Войди в аккаунт", desc: "Доступы и подключенные устройства привязаны к профилю." },
+    { title: "Создай ключ", desc: "Добавляешь ключ с регионом, типом устройства и своим тегом." },
+    { title: "Подключись", desc: "Включаешь доступ и дальше управляешь всем через личный кабинет." },
   ];
 
   return (
@@ -63,29 +63,18 @@ export default function Home() {
               ТУАНЕТ
             </h1>
             <p className="max-w-3xl mx-auto text-2xl text-white/70 font-medium">
-              TuAnet ведет по понятному сценарию: выбрал срок, установил приложение, вошел в аккаунт.
-              Дальше устройства и подписка всегда под рукой в кабинете.
+              TuAnet ведет по понятному сценарию: установил приложение, вошел в аккаунт, создал ключ и подключился.
+              Дальше ключи, устройства и безопасность всегда под рукой в кабинете.
             </p>
-            <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-center">
-              <Link
-                href="/pricing"
-                className={cn(
-                  buttonVariants({ variant: "brand", size: "lg" }),
-                  "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl font-black shadow-2xl"
-                )}
-              >
-                Выбрать тариф
-              </Link>
-              <Link
-                href="/download"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                  "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl border-2"
-                )}
-              >
-                Скачать
-              </Link>
-            </div>
+            <Link
+              href="/download"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "lg" }),
+                "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl border-2"
+              )}
+            >
+              Скачать
+            </Link>
           </div>
         </Reveal>
       </Section>
@@ -149,11 +138,11 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
             {([
             { title: "Контроль устройств", desc: "В кабинете видно, какие устройства подключены, и что сейчас активно." },
-            { title: "Подписка без сюрпризов", desc: "Срок, продление и статус оплаты всегда в одном месте." },
+            { title: "Доступ под контролем", desc: "Ключи, регионы и типы устройств управляются без лишней возни." },
             { title: "Установка по шагам", desc: "Скачал, вошел в аккаунт и подключился без лишних действий." },
             { title: "Три платформы", desc: "Windows, iOS и Android работают в одном сценарии." },
-            { title: "Тариф на срок", desc: "Функции одинаковые, выбираешь только срок и стоимость." },
-            { title: "Доступ под контролем", desc: "Сессии и подключения управляются из кабинета." },
+            { title: "Быстрые ключи", desc: "Новый ключ создается в пару шагов прямо из кабинета." },
+            { title: "Безопасность на месте", desc: "Сессии и настройки доступа управляются из кабинета." },
           ] as { title: string; desc: string }[]).map((benefit, i) => (
               <Card key={i} variant="solid" className={`flex flex-col gap-6 p-8 border-white/10`}>
                 <h3 className="text-2xl font-black uppercase tracking-tight">{benefit.title}</h3>
@@ -193,7 +182,7 @@ export default function Home() {
             <div className="space-y-4 h-full overflow-auto">
               <Accordion items={[
                 { title: "Сколько устройств можно подключить?", content: "До 5 устройств на любом тарифе. Лимит и активные устройства всегда видны в кабинете." },
-                { title: "Как отменить подписку?", content: "В кабинете, в разделе «Подписка». После отмены доступ сохраняется до конца оплаченного периода." },
+                { title: "Как отключить доступ?", content: "В кабинете можно управлять ключами и безопасностью. Если доступ больше не нужен, просто отзови ключ." },
                 { title: "Где скачать приложение?", content: "На странице «Скачать». Для каждой платформы есть инструкции и прямые ссылки." },
                 { title: "Есть ли возвраты?", content: "Да, 7 дней на возврат при первом платеже. Условия подробно описаны в разделе «Возвраты»." },
                 { title: "Что делать, если не подключается?", content: "Проверь интернет, лимит устройств и статус сервиса. Если проблема осталась, напиши в поддержку и приложи скрин ошибки." },
@@ -208,16 +197,16 @@ export default function Home() {
                 <div className="relative z-10 flex flex-col items-center gap-10">
                   <div className="max-w-xs">
                     <h2 className="text-7xl font-black tracking-tighter mb-4 uppercase italic leading-[0.8] text-white">План</h2>
-                    <p className="text-xl font-bold text-white">Выбери срок, установи приложение и управляй доступом из кабинета.</p>
+                    <p className="text-xl font-bold text-white">Установи приложение, создай ключ и управляй доступом из кабинета.</p>
                   </div>
                   <Link
-                    href="/pricing"
+                    href="/download"
                     className={cn(
                       buttonVariants({ variant: "default", size: "lg" }),
                       "h-24 px-12 text-2xl bg-white text-black hover:bg-white/90 hover:scale-105 transition-all rounded-3xl uppercase font-black tracking-widest shadow-2xl"
                     )}
                   >
-                    Выбрать тариф
+                    Скачать
                   </Link>
                 </div>
               </Card>

@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ModalProps {
@@ -40,10 +41,9 @@ export function Modal({ open, title, onClose, children, footer, size = "md" }: M
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
-                    <button
-                        type="button"
+                    <div
                         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-                        aria-label="Закрыть окно"
+                        aria-hidden="true"
                         onClick={onClose}
                     />
                     <motion.div
@@ -66,10 +66,10 @@ export function Modal({ open, title, onClose, children, footer, size = "md" }: M
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="h-10 w-10 rounded-full border-2 border-black/20 text-lg font-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-black/20 text-black transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                                 aria-label="Закрыть"
                             >
-                                ×
+                                <X className="h-5 w-5" strokeWidth={3} />
                             </button>
                         </div>
                         <div className="px-8 py-6">{children}</div>

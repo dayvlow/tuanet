@@ -4,8 +4,8 @@ import { profileFixture } from "@/lib/account-fixtures";
 
 const quickActions = [
     { label: "Создать ключ", href: "/account/keys" },
-    { label: "Устройства", href: "/account/devices" },
     { label: "Безопасность", href: "/account/security" },
+    { label: "Профиль", href: "/account/profile" },
 ];
 
 export default async function ProfilePage({

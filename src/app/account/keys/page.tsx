@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AccountShell } from "@/components/account/AccountShell";
 import { KeysTable } from "@/components/account/KeysTable";
@@ -8,39 +8,49 @@ import { KeyCreateModal, KeyRevokeModal } from "@/components/account/KeyModals";
 import { keysFixture, KeyItem } from "@/lib/account-fixtures";
 
 const quickActions = [
-    { label: "Создать ключ", href: "/account/keys" },
-    { label: "Устройства", href: "/account/devices" },
     { label: "Безопасность", href: "/account/security" },
+    { label: "Профиль", href: "/account/profile" },
 ];
 
 function KeysPageContent() {
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [revokeKey, setRevokeKey] = useState<KeyItem | null>(null);
     const searchParams = useSearchParams();
+    const [keys, setKeys] = useState(keysFixture);
+    const [isCreateOpen, setIsCreateOpen] = useState(() => searchParams.get("create") === "1");
+    const [revokeKey, setRevokeKey] = useState<KeyItem | null>(null);
     const state = (searchParams.get("state") ?? "success") as "success" | "loading" | "empty" | "error";
-
-    useEffect(() => {
-        if (searchParams.get("create") === "1") {
-            setIsCreateOpen(true);
-        }
-    }, [searchParams]);
 
     return (
         <AccountShell
             title="Ключи"
             description="API keys и токены доступа"
-            primaryAction={{ label: "Создать ключ", href: "/account/keys?create=1" }}
             quickActions={quickActions}
         >
             <KeysTable
-                keys={keysFixture}
+                keys={keys}
                 state={state}
                 onCreate={() => setIsCreateOpen(true)}
                 onRevoke={(key) => setRevokeKey(key)}
             />
 
-            <KeyCreateModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
-            <KeyRevokeModal open={Boolean(revokeKey)} onClose={() => setRevokeKey(null)} keyItem={revokeKey} />
+            <KeyCreateModal
+                open={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onCreateKey={(key) => setKeys((current) => [key, ...current])}
+            />
+            <KeyRevokeModal
+                open={Boolean(revokeKey)}
+                onClose={() => setRevokeKey(null)}
+                keyItem={revokeKey}
+                onConfirm={(key) =>
+                    setKeys((current) =>
+                        current.map((item) =>
+                            item.id === key.id
+                                ? { ...item, status: "revoked", lastActive: "Только что", affectedDevices: [] }
+                                : item
+                        )
+                    )
+                }
+            />
         </AccountShell>
     );
 }

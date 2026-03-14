@@ -3,25 +3,31 @@ import { Card } from "@/components/ui/Card";
 
 export default function StatusPage() {
     return (
-        <div className="bg-black min-h-screen text-white pt-32 pb-20 selection:bg-brand selection:text-black">
-            <Section className="max-w-4xl mx-auto">
-                <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 uppercase italic">Статус сервиса</h1>
-                <p className="text-2xl text-white/60 max-w-2xl">
-                    Актуальная информация о доступности сервисов и приложений.
-                </p>
+        <div className="min-h-screen bg-black pt-32 pb-20 text-white selection:bg-brand selection:text-black">
+            <Section>
+                <div className="max-w-4xl space-y-10">
+                    <div>
+                        <h1 className="text-6xl font-black uppercase tracking-tight md:text-8xl">Статус сервиса</h1>
+                        <p className="mt-6 text-xl text-white/60">Текущая доступность основных компонентов TuAnet.</p>
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-                    {[
-                        { title: "Приложения", status: "Работает стабильно" },
-                        { title: "Оплата", status: "Работает стабильно" },
-                        { title: "Кабинет", status: "Работает стабильно" },
-                        { title: "Подключение", status: "Работает стабильно" },
-                    ].map((item) => (
-                        <Card key={item.title} variant="solid" className="p-8 border-white/10">
-                            <h2 className="text-2xl font-black uppercase tracking-tight mb-4">{item.title}</h2>
-                            <p className="text-lg text-white/70">{item.status}</p>
-                        </Card>
-                    ))}
+                    <div className="grid gap-6">
+                        {[
+                            ["Серверы доступа", "Online"],
+                            ["Авторизация", "Online"],
+                            ["Выдача ключей", "Online"],
+                            ["Платёжные каналы", "Online"],
+                        ].map(([label, status]) => (
+                            <Card key={label} variant="solid" className="border-zinc-800 p-8">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="text-xl font-black uppercase tracking-tight">{label}</div>
+                                    <div className="rounded-full border-2 border-white/20 bg-white/5 px-4 py-2 text-sm font-bold uppercase tracking-normal">
+                                        {status}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
                 </div>
             </Section>
         </div>
