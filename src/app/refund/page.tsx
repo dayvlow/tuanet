@@ -8,9 +8,9 @@ export default function RefundPage() {
                 <div className="max-w-4xl space-y-8">
                     <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">Возвраты</h1>
                     <Card variant="solid" className="border-zinc-800 p-8 text-white/70">
-                        <p>Первый платёж можно вернуть в течение 7 дней, если сервис не подошёл.</p>
-                        <p className="mt-4">Для запроса возврата напиши в поддержку и приложи email аккаунта и дату платежа.</p>
-                        <p className="mt-4">После подтверждения возврата доступ к сервису отключается, а активные ключи становятся недействительными.</p>
+                        <p>Если сервис не подошел, первый платеж можно вернуть в течение 7 дней.</p>
+                        <p className="mt-4">Для запроса напиши в поддержку и укажи email аккаунта и дату оплаты.</p>
+                        <p className="mt-4">После подтверждения возврата доступ будет отключен, а активные ключи перестанут работать.</p>
                     </Card>
                 </div>
             </Section>

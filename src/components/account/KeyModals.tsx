@@ -107,7 +107,7 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
                             type="text"
                             value={deviceName}
                             onChange={(event) => setDeviceName(event.target.value)}
-                            placeholder="Например: MacBook Алексея"
+                            placeholder="Например: Рабочий ноутбук"
                             className="mt-2 h-12 w-full rounded-2xl border-2 border-black/20 px-4 text-sm font-semibold"
                         />
                     </div>
@@ -157,7 +157,7 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
                 <div className="space-y-4">
                     <div className="rounded-3xl border-2 border-brand bg-brand/10 p-6">
                         <div className="text-xs font-bold uppercase tracking-normal text-brand">Показываем один раз</div>
-                        <p className="mt-2 text-lg font-semibold">Скопируй ключ и сохрани в безопасном месте.</p>
+                        <p className="mt-2 text-lg font-semibold">Скопируй ключ сейчас. Потом он больше не покажется.</p>
                     </div>
                     <div className="rounded-2xl border-2 border-black/20 bg-black/5 p-4 text-lg font-black tracking-normal">
                         {generatedKey}
@@ -226,7 +226,7 @@ export function KeyRevokeModal({ open, onClose, keyItem, onConfirm }: KeyRevokeM
         >
             <div className="space-y-4">
                 <p className="text-lg">
-                    Ключ <span className="font-bold">{keyItem?.name ?? ""}</span> будет отозван. Устройства ниже потеряют доступ.
+                    Ключ <span className="font-bold">{keyItem?.name ?? ""}</span> будет отключен. Устройства ниже потеряют доступ.
                 </p>
                 <div className="rounded-3xl border-2 border-black/10 bg-black/5 p-4">
                     {(keyItem?.affectedDevices?.length ?? 0) > 0 ? (
@@ -239,11 +239,11 @@ export function KeyRevokeModal({ open, onClose, keyItem, onConfirm }: KeyRevokeM
                             ))}
                         </ul>
                     ) : (
-                        <div className="text-sm text-black/60">Нет активных устройств, связанных с ключом.</div>
+                        <div className="text-sm text-black/60">С этим ключом сейчас не связано активных устройств.</div>
                     )}
                 </div>
                 <div className="rounded-2xl border-2 border-red-500/30 bg-red-500/10 p-4 text-xs uppercase tracking-normal text-red-600">
-                    Действие необратимо. Подключения на этом ключе будут остановлены.
+                    Это действие нельзя отменить. Подключения на этом ключе будут остановлены.
                 </div>
             </div>
         </Modal>

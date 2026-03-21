@@ -19,8 +19,8 @@ export default function Download() {
                             <span className="text-white">Туанет</span>
                         </h1>
                         <p className="max-w-2xl text-2xl text-white/60 font-medium leading-relaxed mb-20 mx-auto">
-                            Выбери платформу, установи приложение и войди в аккаунт.
-                            Дальше подключение идет внутри приложения.
+                            Выбери свою платформу, установи приложение и перейди в кабинет.
+                            Дальше все управление будет под рукой.
                         </p>
                     </div>
                 </Reveal>
@@ -29,17 +29,17 @@ export default function Download() {
                     {[
                         {
                             platform: "Windows",
-                            desc: "Работает на актуальных версиях Windows.",
+                            desc: "Установщик и короткая инструкция для первого запуска.",
                             link: "/download/windows",
                         },
                         {
                             platform: "iOS",
-                            desc: "Установка как у обычного приложения.",
+                            desc: "Понятный сценарий установки и входа на iPhone.",
                             link: "/download/ios",
                         },
                         {
                             platform: "Android",
-                            desc: "Запускается без ручной возни с настройками.",
+                            desc: "Установка и запуск без лишней ручной настройки.",
                             link: "/download/android",
                         }
                     ].map((item) => (
@@ -62,7 +62,7 @@ export default function Download() {
                                         "w-full h-14 rounded-2xl uppercase tracking-widest text-sm font-bold border-white/20 hover:bg-white hover:text-black"
                                     )}
                                 >
-                                    Скачать и установить
+                                    Открыть инструкцию
                                 </Link>
                             </div>
                         </Card>
@@ -73,21 +73,21 @@ export default function Download() {
             <Section>
                 <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Card variant="solid" className="p-8 border-white/10">
-                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Уже оплатил?</h3>
-                        <p className="text-lg text-white/60 mb-6">Войди в аккаунт и установи приложение под свою платформу.</p>
+                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Уже есть доступ?</h3>
+                        <p className="text-lg text-white/60 mb-6">Открой кабинет, если нужно проверить ключи, устройства или параметры доступа.</p>
                         <Link
-                            href="/account"
+                            href="/login"
                             className={cn(
                                 buttonVariants({ variant: "brand", size: "lg" }),
                                 "h-14 px-8 rounded-3xl uppercase tracking-widest text-sm font-bold"
                             )}
                         >
-                            Войти в аккаунт
+                            Войти в кабинет
                         </Link>
                     </Card>
                     <Card variant="outline" className="p-8 border-white/15">
-                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Нужна помощь?</h3>
-                        <p className="text-lg text-white/60 mb-6">Если установка или вход не работают как ожидается, напиши в поддержку.</p>
+                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Что-то не сходится?</h3>
+                        <p className="text-lg text-white/60 mb-6">Если установка или вход идут не по плану, помощь уже рядом.</p>
                         <Link
                             href="/help#contact"
                             className={cn(

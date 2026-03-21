@@ -37,7 +37,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
     }
 
     function requestDeleteAccount() {
-        setDeleteNotice("Запрос на удаление аккаунта подготовлен. Для завершения свяжись с поддержкой.");
+        setDeleteNotice("Запрос подготовлен. Для завершения удаления свяжись с поддержкой.");
         setDeleteConfirmValue("");
         setShowDeleteModal(false);
     }
@@ -47,7 +47,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
             <div className="flex flex-col gap-6">
                 <div>
                     <h2 className="text-2xl font-black uppercase tracking-tight">Безопасность</h2>
-                    <p className="text-base font-medium leading-relaxed text-white/40">2FA, сессии, контроль доступа</p>
+                    <p className="text-base font-medium leading-relaxed text-white/40">Двухфакторная защита, сессии и контроль доступа.</p>
                 </div>
 
                 {notice && <div className="rounded-2xl border-2 border-white/10 bg-white/5 p-4 text-sm text-white/70">{notice}</div>}
@@ -58,14 +58,14 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                         {Array.from({ length: 2 }).map((_, i) => (
                             <div key={i} className="h-14 rounded-2xl bg-white/5" />
                         ))}
-                        <div className="text-base font-medium leading-relaxed text-white/40">Загрузка безопасности…</div>
+                        <div className="text-base font-medium leading-relaxed text-white/40">Загружаем настройки безопасности…</div>
                     </div>
                 )}
 
                 {state === "error" && (
                     <div className="rounded-3xl border-2 border-red-500/40 bg-red-500/10 p-6">
-                        <div className="text-base font-medium leading-relaxed text-red-400">Ошибка безопасности</div>
-                        <p className="mt-2 text-lg">Не удалось загрузить настройки.</p>
+                        <div className="text-base font-medium leading-relaxed text-red-400">Не удалось загрузить настройки</div>
+                        <p className="mt-2 text-lg">Попробуй обновить страницу чуть позже.</p>
                     </div>
                 )}
 
@@ -76,7 +76,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                             <div className="mt-3 flex items-center justify-between">
                                 <div>
                                     <div className="text-lg font-bold">{twoFactorEnabled ? "2FA включена" : "2FA отключена"}</div>
-                                    <p className="text-sm text-white/60">Добавь дополнительный уровень защиты.</p>
+                                    <p className="text-sm text-white/60">Включи дополнительное подтверждение входа.</p>
                                 </div>
                                 <button
                                     type="button"
@@ -87,7 +87,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                                 </button>
                             </div>
                             <div className="mt-4 rounded-2xl border-2 border-white/10 bg-white/5 p-3 text-xs uppercase tracking-normal text-white/50">
-                                {twoFactorEnabled ? "Резервные коды можно сохранить после настройки устройства." : "Резервные коды будут доступны после активации."}
+                                {twoFactorEnabled ? "После настройки можно будет сохранить резервные коды." : "Резервные коды появятся после активации."}
                             </div>
                         </div>
 
@@ -115,7 +115,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                                         )}
                                     </div>
                                 ))}
-                                {sessionList.length === 0 && <div className="text-sm text-white/50">Активных дополнительных сессий нет.</div>}
+                                {sessionList.length === 0 && <div className="text-sm text-white/50">Дополнительных сессий сейчас нет.</div>}
                             </div>
                             <button
                                 type="button"
@@ -147,7 +147,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                         <div>
                             <div className="text-sm font-medium tracking-normal text-red-400">Опасная зона</div>
                             <div className="mt-2 text-lg font-semibold text-white">Удаление аккаунта</div>
-                            <p className="text-sm text-white/60">Все данные будут удалены без возможности восстановления.</p>
+                            <p className="text-sm text-white/60">После удаления восстановить аккаунт и данные не получится.</p>
                         </div>
                         <button
                             type="button"
@@ -199,7 +199,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
             >
                 <div className="space-y-4">
                     <p className="text-lg">
-                        Это действие необратимо. Для подтверждения введи слово <span className="font-bold">DELETE</span>.
+                        Это действие нельзя отменить. Для подтверждения введи слово <span className="font-bold">DELETE</span>.
                     </p>
                     <input
                         type="text"
@@ -209,7 +209,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                         className="h-12 w-full rounded-2xl border-2 border-white/20 px-4 text-sm font-semibold"
                     />
                     <div className="rounded-2xl border-2 border-red-500/30 bg-red-500/10 p-4 text-xs uppercase tracking-normal text-red-400">
-                        После удаления доступы и история активности будут потеряны.
+                        После удаления будут потеряны доступы, ключи и история активности.
                     </div>
                 </div>
             </Modal>

@@ -19,7 +19,7 @@ export default async function ProfilePage({
     return (
         <AccountShell
             title="Профиль"
-            description="Данные и пароль"
+            description="Данные аккаунта и пароль"
             primaryAction={{ label: "Сохранить", href: "#profile" }}
             quickActions={quickActions}
         >

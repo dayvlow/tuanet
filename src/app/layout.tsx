@@ -7,8 +7,8 @@ import { Noise } from "@/components/ui/Noise";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Туанет — контроль подключения и подписки",
-  description: "Туанет помогает быстро подключаться, управлять устройствами и подпиской без лишних шагов.",
+  title: "Туанет — простой VPN для работы и повседневного использования",
+  description: "Подключайте устройства, управляйте доступом и держите всё под рукой в одном кабинете.",
 };
 
 export default function RootLayout({

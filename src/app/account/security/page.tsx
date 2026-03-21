@@ -19,7 +19,7 @@ export default async function SecurityPage({
     return (
         <AccountShell
             title="Безопасность"
-            description="2FA, сессии, уведомления"
+            description="Защита входа и активные сессии"
             primaryAction={{ label: "Включить 2FA", href: "/account/security#2fa" }}
             quickActions={quickActions}
         >

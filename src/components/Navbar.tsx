@@ -77,7 +77,7 @@ export default function Navbar() {
                         <div className="flex items-center gap-4 ml-6">
                             <ThemeToggle />
                             <Link
-                                href="/account"
+                                href="/login"
                                 className={cn(
                                     buttonVariants({ variant: "ghost", size: "sm" }),
                                     "text-sm font-bold uppercase tracking-widest text-white/70 hover:text-white"
@@ -156,7 +156,7 @@ export default function Navbar() {
                                 <ThemeToggle />
                             </div>
                             <Link
-                                href="/account"
+                                href="/login"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={cn(
                                     buttonVariants({ variant: "outline", size: "lg" }),

@@ -86,15 +86,15 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
                     {[
                         {
                             title: "Банковская карта",
-                            description: "Visa, MasterCard, Мир. Пополнение за несколько секунд.",
+                            description: "Обычное пополнение с карты без лишних шагов.",
                         },
                         {
                             title: "СБП",
-                            description: "Мгновенный перевод через приложение банка без комиссии.",
+                            description: "Перевод через приложение банка по короткому сценарию.",
                         },
                         {
                             title: "Криптовалюта",
-                            description: "USDT и другие доступные сети для быстрого зачисления.",
+                            description: "Пополнение через доступные сети с подтверждением в поддержке.",
                         },
                     ].map((method) => (
                         <button
@@ -112,7 +112,7 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
                             <div className="text-sm font-bold uppercase tracking-normal text-black/50">Выбран способ</div>
                             <div className="mt-2 text-xl font-black uppercase tracking-tight">{selectedMethod}</div>
                             <p className="mt-3 text-sm text-black/60">
-                                Для завершения пополнения перейди в поддержку. Там можно запросить актуальные реквизиты и подтверждение платежа.
+                                Для завершения перейди в поддержку. Там подскажут актуальные реквизиты и дальнейшие шаги.
                             </p>
                             <a
                                 href="mailto:support@tuaanet.com?subject=Пополнение%20баланса"

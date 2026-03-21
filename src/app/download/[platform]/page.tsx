@@ -21,27 +21,27 @@ export default async function PlatformDownloadPage({
     const platformData: Record<string, { title: string; subtitle: string; version: string; size: string; requirements: string[]; downloadUrl: string; storeLabel?: string; steps: Array<{ title: string; text: string }>; issues: Array<{ q: string; a: string }> }> = {
         windows: {
             title: "Туанет для Windows",
-            subtitle: "Получить установщик можно через поддержку. Ниже есть быстрые шаги запуска.",
+            subtitle: "Запроси актуальный установщик и пройди короткий сценарий запуска для Windows.",
             version: "v2.4.1",
             size: "64 МБ",
             requirements: ["Windows 10/11", "4 ГБ RAM", "100 МБ свободного места"],
             downloadUrl: "/help#contact",
             storeLabel: "Получить установщик",
             steps: [
-                { title: "Получи установщик", text: "Открой поддержку и запроси актуальную ссылку на установщик." },
-                { title: "Запусти файл и заверши установку", text: "Разреши установку, если система спросит." },
-                { title: "Открой приложение и войди в аккаунт", text: "Используй email, который указан при оплате." },
-                { title: "Нажми «Подключить»", text: "Готово. Сервис активен." }
+                { title: "Получи установщик", text: "Открой поддержку и запроси актуальную ссылку." },
+                { title: "Установи приложение", text: "Запусти файл и подтверди установку, если система попросит." },
+                { title: "Войди в аккаунт", text: "Используй email, который привязан к твоему аккаунту." },
+                { title: "Включи подключение", text: "После этого доступ будет готов к работе." }
             ],
             issues: [
-                { q: "Не запускается установщик", a: "Проверь права администратора и повтори установку." },
-                { q: "Блокирует антивирус", a: "Добавь приложение в исключения (только если доверяешь источнику установки)." },
-                { q: "Нет подключения", a: "Проверь сеть и статус сервиса." }
+                { q: "Не запускается установщик", a: "Проверь права администратора и попробуй снова." },
+                { q: "Антивирус мешает установке", a: "Проверь источник файла и при необходимости добавь приложение в исключения." },
+                { q: "Нет подключения", a: "Сначала проверь сеть и статус сервиса." }
             ]
         },
         ios: {
             title: "Туанет для iOS",
-            subtitle: "Запроси актуальную ссылку через поддержку, затем войди и подключись.",
+            subtitle: "Открой приложение на iPhone, войди в аккаунт и включи подключение по короткому сценарию.",
             version: "v2.4.1",
             size: "48 МБ",
             requirements: ["iOS 16+", "Свободное место 100 МБ"],
@@ -49,35 +49,35 @@ export default async function PlatformDownloadPage({
             storeLabel: "Получить ссылку для iPhone",
             steps: [
                 { title: "Установи приложение", text: "Перейди в App Store и нажми «Загрузить»." },
-                { title: "Открой и войди в аккаунт", text: "Используй email, указанный при оплате." },
-                { title: "Разреши необходимые доступы", text: "Если система запросит, разреши доступ для работы." },
-                { title: "Нажми «Подключить»", text: "Сервис активен." }
+                { title: "Войди в аккаунт", text: "Используй email, который привязан к аккаунту." },
+                { title: "Разреши системные запросы", text: "Если iPhone попросит подтверждение, просто продолжай по шагам." },
+                { title: "Включи подключение", text: "После этого сервис будет готов к работе." }
             ],
             issues: [
-                { q: "Перезапусти приложение", a: "Иногда это решает проблему входа или подключения." },
+                { q: "Приложение ведет себя странно", a: "Закрой его полностью и открой снова." },
                 { q: "Проверь интернет", a: "Убедись, что сеть стабильна." },
                 { q: "Проверь лимит устройств", a: "В кабинете видно, сколько устройств подключено." },
-                { q: "Загляни в «Помощь»", a: "Там есть быстрые решения по типовым ошибкам." }
+                { q: "Нужна ручная подсказка", a: "Открой раздел «Помощь» и перейди к поддержке." }
             ]
         },
         android: {
             title: "Туанет для Android",
-            subtitle: "Запроси актуальную ссылку через поддержку и установи приложение без лишней ручной настройки.",
+            subtitle: "Установи приложение на Android, войди в аккаунт и включи доступ без лишней возни.",
             version: "v2.4.1",
             size: "52 МБ",
             requirements: ["Android 10+", "Свободное место 120 МБ"],
             downloadUrl: "/help#contact",
             storeLabel: "Получить ссылку для Android",
             steps: [
-                { title: "Установи приложение", text: "Перейди в Google Play и нажми «Установить»." },
-                { title: "Войди в аккаунт", text: "Используй email, который указан при оплате." },
-                { title: "Нажми «Подключить»", text: "Сервис активен." },
-                { title: "Разреши доступы", text: "Если система запросит, дай разрешения для корректной работы." }
+                { title: "Установи приложение", text: "Открой Google Play и нажми «Установить»." },
+                { title: "Войди в аккаунт", text: "Используй email, который привязан к аккаунту." },
+                { title: "Включи подключение", text: "После входа сервис будет готов к запуску." },
+                { title: "Подтверди доступы", text: "Если Android покажет системные запросы, просто продолжай по шагам." }
             ],
             issues: [
-                { q: "Ограничения батареи", a: "Отключи оптимизацию батареи для приложения." },
-                { q: "Нет подключения", a: "Проверь сеть и статус сервиса." },
-                { q: "Не входит в аккаунт", a: "Сбрось пароль и попробуй снова." }
+                { q: "Система ограничивает приложение", a: "Отключи для него оптимизацию батареи." },
+                { q: "Нет подключения", a: "Сначала проверь сеть и статус сервиса." },
+                { q: "Не удается войти", a: "Сбрось пароль и попробуй снова." }
             ]
         }
     };
@@ -112,13 +112,13 @@ export default async function PlatformDownloadPage({
                             {data.storeLabel ?? "Скачать установщик"}
                         </a>
                         <Link
-                            href="/account"
+                            href="/login"
                             className={cn(
                                 buttonVariants({ variant: "outline", size: "lg" }),
                                 "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl border-2"
                             )}
                         >
-                            Войти и активировать
+                            Войти в кабинет
                         </Link>
                     </div>
                 </Reveal>
@@ -142,7 +142,7 @@ export default async function PlatformDownloadPage({
                             </div>
                         </div>
                     </div>
-                    <h2 className="text-5xl font-black mb-12 uppercase tracking-tight">Как запустить</h2>
+                    <h2 className="text-5xl font-black mb-12 uppercase tracking-tight">Как начать</h2>
                     <div className="space-y-12">
                         {data.steps.map((step, i) => (
                             <div key={i} className="flex gap-8">
@@ -162,7 +162,7 @@ export default async function PlatformDownloadPage({
             <Section>
                 <div className="max-w-4xl mx-auto">
                     <h2 className="text-5xl font-black mb-12 uppercase tracking-tight">
-                        {platform === "ios" ? "Если не подключается" : "Частые проблемы"}
+                        {platform === "ios" ? "Если что-то не работает" : "Частые вопросы"}
                     </h2>
                     <div className="space-y-8">
                         {data.issues.map((issue, i) => (
@@ -177,8 +177,8 @@ export default async function PlatformDownloadPage({
 
             <Section>
                 <div className="max-w-2xl mx-auto text-center">
-                    <h2 className="text-5xl font-black mb-8 uppercase tracking-tight">Не помогло?</h2>
-                    <p className="text-xl text-white/60 mb-12">Напиши в поддержку и приложи скрин ошибки.</p>
+                    <h2 className="text-5xl font-black mb-8 uppercase tracking-tight">Нужна помощь?</h2>
+                    <p className="text-xl text-white/60 mb-12">Если сценарий выше не помог, напиши в поддержку и приложи скрин ошибки.</p>
                     <Link
                         href="/help"
                         className={cn(

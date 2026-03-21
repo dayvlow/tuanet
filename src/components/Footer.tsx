@@ -10,7 +10,7 @@ export default function Footer() {
                             Туанет
                         </Link>
                         <p className="text-white/60 text-lg leading-relaxed max-w-xs">
-                            Подключился и поехал. Управляй ключами, безопасностью и устройствами в одном месте.
+                            Простой сервис для подключения, управления устройствами и контроля доступа в одном кабинете.
                         </p>
                         <div className="text-sm text-white/50">
                             Поддержка: <a href="mailto:support@tuaanet.com" className="text-white hover:text-brand transition-colors">support@tuaanet.com</a>
@@ -31,7 +31,8 @@ export default function Footer() {
                     <div className="flex flex-col gap-6">
                         <h4 className="text-xs font-bold uppercase tracking-widest text-white/40">Кабинет</h4>
                         <ul className="space-y-4">
-                            <li><Link href="/account" className="text-xl font-bold hover:text-brand transition-colors">Войти</Link></li>
+                            <li><Link href="/login" className="text-xl font-bold hover:text-brand transition-colors">Войти</Link></li>
+                            <li><Link href="/register" className="text-xl font-bold hover:text-brand transition-colors">Регистрация</Link></li>
                             <li><Link href="/account/keys" className="text-xl font-bold hover:text-brand transition-colors">Ключи</Link></li>
                             <li><Link href="/account/security" className="text-xl font-bold hover:text-brand transition-colors">Безопасность</Link></li>
                             <li><Link href="/account/profile" className="text-xl font-bold hover:text-brand transition-colors">Профиль</Link></li>

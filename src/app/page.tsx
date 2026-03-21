@@ -48,10 +48,10 @@ export default function Home() {
   const pinTrackHeight = `calc(100vh + ${Math.round(maxTranslate)}px + 40vh)`;
   const sectionGap = "py-20 md:py-28";
   const steps = [
-    { title: "Скачай приложение", desc: "Выбираешь свою платформу и ставишь приложение без лишних шагов." },
-    { title: "Войди в аккаунт", desc: "Доступы и подключенные устройства привязаны к профилю." },
-    { title: "Создай ключ", desc: "Добавляешь ключ с регионом, типом устройства и своим тегом." },
-    { title: "Подключись", desc: "Включаешь доступ и дальше управляешь всем через личный кабинет." },
+    { title: "Скачай приложение", desc: "Открой свою платформу и установи приложение по короткой инструкции." },
+    { title: "Войди в аккаунт", desc: "Все ключи и устройства будут привязаны к одному кабинету." },
+    { title: "Создай ключ", desc: "Добавь устройство, выбери регион и сохрани удобный тег для себя." },
+    { title: "Подключись", desc: "Запусти доступ и возвращайся в кабинет, если нужно что-то изменить." },
   ];
 
   return (
@@ -63,18 +63,28 @@ export default function Home() {
               ТУАНЕТ
             </h1>
             <p className="max-w-3xl mx-auto text-2xl text-white/70 font-medium">
-              TuAnet ведет по понятному сценарию: установил приложение, вошел в аккаунт, создал ключ и подключился.
-              Дальше ключи, устройства и безопасность всегда под рукой в кабинете.
+              Простой VPN для работы и повседневного использования.
             </p>
-            <Link
-              href="/download"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl border-2"
-              )}
-            >
-              Скачать
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <Link
+                href="/download"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" }),
+                  "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl border-2 border-white bg-transparent text-white"
+                )}
+              >
+                Скачать приложение
+              </Link>
+              <Link
+                href="/login"
+                className={cn(
+                  buttonVariants({ variant: "default", size: "lg" }),
+                  "uppercase tracking-widest text-lg h-20 px-12 rounded-3xl border-2"
+                )}
+              >
+                Войти в кабинет
+              </Link>
+            </div>
           </div>
         </Reveal>
       </Section>
@@ -82,7 +92,7 @@ export default function Home() {
       <Reveal width="100%">
         <div className={`${sectionGap} w-full flex items-center justify-center text-center px-6 md:px-12`}>
           <h2 className="mx-auto text-6xl md:text-9xl font-black tracking-tighter uppercase italic">
-            Подключение<br /> <span className="text-brand">за 4 шага</span>
+            Подключение<br /> <span className="text-brand">по понятному сценарию</span>
           </h2>
         </div>
       </Reveal>
@@ -137,12 +147,12 @@ export default function Home() {
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
             {([
-            { title: "Контроль устройств", desc: "В кабинете видно, какие устройства подключены, и что сейчас активно." },
-            { title: "Доступ под контролем", desc: "Ключи, регионы и типы устройств управляются без лишней возни." },
-            { title: "Установка по шагам", desc: "Скачал, вошел в аккаунт и подключился без лишних действий." },
-            { title: "Три платформы", desc: "Windows, iOS и Android работают в одном сценарии." },
-            { title: "Быстрые ключи", desc: "Новый ключ создается в пару шагов прямо из кабинета." },
-            { title: "Безопасность на месте", desc: "Сессии и настройки доступа управляются из кабинета." },
+            { title: "Контроль устройств", desc: "Сразу видно, где сервис уже включен и что сейчас активно." },
+            { title: "Ключи без путаницы", desc: "Регионы, типы устройств и статусы собраны в одной таблице." },
+            { title: "Подключение без лишнего", desc: "Не нужно долго разбираться, чтобы дойти до рабочего доступа." },
+            { title: "Понятные платформы", desc: "Windows, iPhone и Android идут по одинаково ясному сценарию." },
+            { title: "Быстрое создание ключа", desc: "Новый ключ добавляется за пару шагов прямо в кабинете." },
+            { title: "Настройки под рукой", desc: "Сессии и параметры доступа можно проверить в любой момент." },
           ] as { title: string; desc: string }[]).map((benefit, i) => (
               <Card key={i} variant="solid" className={`flex flex-col gap-6 p-8 border-white/10`}>
                 <h3 className="text-2xl font-black uppercase tracking-tight">{benefit.title}</h3>
@@ -155,9 +165,9 @@ export default function Home() {
       <Section container={false} padding="none" className={`${sectionGap} px-6 md:px-12`}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { title: "Оплата без риска", desc: "Возврат в течение 7 дней, если сервис не подошёл." },
-            { title: "Поддержка по делу", desc: "Если что-то не сходится, разберем вопрос по шагам." },
-            { title: "Условия на странице", desc: "Правила, возврат и документы можно проверить до оплаты." },
+            { title: "Понятные условия", desc: "Условия использования, возврат и документы доступны прямо на сайте." },
+            { title: "Поддержка по делу", desc: "Если что-то не сходится, можно быстро перейти в помощь и разобраться." },
+            { title: "Возврат без сюрпризов", desc: "Первый платеж можно вернуть в течение 7 дней, если сервис не подошел." },
           ].map((item, i) => (
             <Card key={i} variant="outline" className="p-8 border-white/15">
               <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{item.title}</h3>
@@ -181,11 +191,11 @@ export default function Home() {
             </Reveal>
             <div className="space-y-4 h-full overflow-auto">
               <Accordion items={[
-                { title: "Сколько устройств можно подключить?", content: "До 5 устройств на любом тарифе. Лимит и активные устройства всегда видны в кабинете." },
-                { title: "Как отключить доступ?", content: "В кабинете можно управлять ключами и безопасностью. Если доступ больше не нужен, просто отзови ключ." },
-                { title: "Где скачать приложение?", content: "На странице «Скачать». Для каждой платформы есть инструкции и прямые ссылки." },
-                { title: "Есть ли возвраты?", content: "Да, 7 дней на возврат при первом платеже. Условия подробно описаны в разделе «Возвраты»." },
-                { title: "Что делать, если не подключается?", content: "Проверь интернет, лимит устройств и статус сервиса. Если проблема осталась, напиши в поддержку и приложи скрин ошибки." },
+                { title: "Сколько устройств можно подключить?", content: "До 5 устройств. Лимит и активные подключения всегда видны в кабинете." },
+                { title: "Как отключить доступ?", content: "Если ключ больше не нужен, его можно отозвать в кабинете за пару кликов." },
+                { title: "Где скачать приложение?", content: "На странице «Скачать». Для каждой платформы есть отдельная инструкция." },
+                { title: "Есть ли возвраты?", content: "Да, первый платеж можно вернуть в течение 7 дней. Подробности есть в разделе «Возвраты»." },
+                { title: "Что делать, если не подключается?", content: "Сначала проверь статус сервиса, ключ и лимит устройств. Если не помогло, напиши в поддержку." },
               ]} />
             </div>
           </div>
@@ -196,8 +206,8 @@ export default function Home() {
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 <div className="relative z-10 flex flex-col items-center gap-10">
                   <div className="max-w-xs">
-                    <h2 className="text-7xl font-black tracking-tighter mb-4 uppercase italic leading-[0.8] text-white">План</h2>
-                    <p className="text-xl font-bold text-white">Установи приложение, создай ключ и управляй доступом из кабинета.</p>
+                    <h2 className="text-7xl font-black tracking-tighter mb-4 uppercase italic leading-[0.8] text-white">Старт</h2>
+                    <p className="text-xl font-bold text-white">Открой загрузку, установи приложение и подключись по понятному сценарию.</p>
                   </div>
                   <Link
                     href="/download"

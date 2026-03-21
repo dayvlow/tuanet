@@ -9,7 +9,7 @@ export default function HelpPage() {
                     <div>
                         <h1 className="text-6xl font-black uppercase tracking-tight md:text-8xl">Помощь</h1>
                         <p className="mt-6 max-w-3xl text-xl text-white/60">
-                            Быстрые контакты, сценарии установки и базовые действия, если что-то пошло не так.
+                            Короткие действия, контакты поддержки и понятный маршрут, если что-то пошло не по плану.
                         </p>
                     </div>
 
@@ -19,15 +19,15 @@ export default function HelpPage() {
                             <ul className="mt-6 space-y-3 text-white/70">
                                 <li>Проверь, что приложение установлено под нужную платформу.</li>
                                 <li>Убедись, что вход выполнен под правильным аккаунтом.</li>
-                                <li>Если ключ не работает, создай новый в разделе `Ключи`.</li>
-                                <li>Если доступ всё равно не поднимается, свяжись с поддержкой.</li>
+                                <li>Если ключ не работает, создай новый в разделе «Ключи».</li>
+                                <li>Если доступ все равно не поднимается, напиши в поддержку.</li>
                             </ul>
                         </Card>
                         <Card id="contact" variant="outline" className="border-white/15 p-8">
                             <h2 className="text-2xl font-black uppercase tracking-tight">Контакты поддержки</h2>
                             <div className="mt-6 space-y-4 text-lg">
-                                <p className="text-white/70">Email: `support@tuaanet.com`</p>
-                                <p className="text-white/70">Ответ в рабочее время обычно занимает до 15 минут.</p>
+                                <p className="text-white/70">Email: support@tuaanet.com</p>
+                                <p className="text-white/70">В рабочее время обычно отвечаем в течение 15 минут.</p>
                                 <a
                                     href="mailto:support@tuaanet.com?subject=TuAnet%20Support"
                                     className="inline-flex rounded-full border-2 border-white/20 px-5 py-3 text-sm font-bold uppercase tracking-normal text-white transition hover:bg-white/10"

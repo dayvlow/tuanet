@@ -29,7 +29,7 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
             <div className="flex flex-col gap-6">
                 <div>
                     <h2 className="text-2xl font-black uppercase tracking-tight">Профиль</h2>
-                    <p className="text-base font-medium leading-relaxed text-white/40">Данные аккаунта</p>
+                    <p className="text-base font-medium leading-relaxed text-white/40">Основные данные аккаунта.</p>
                 </div>
 
                 {state === "loading" && (
@@ -37,14 +37,14 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
                         {Array.from({ length: 3 }).map((_, i) => (
                             <div key={i} className="h-12 rounded-2xl bg-white/5" />
                         ))}
-                        <div className="text-base font-medium leading-relaxed text-white/40">Загрузка профиля…</div>
+                        <div className="text-base font-medium leading-relaxed text-white/40">Загружаем профиль…</div>
                     </div>
                 )}
 
                 {state === "error" && (
                     <div className="rounded-3xl border-2 border-red-500/40 bg-red-500/10 p-6">
-                        <div className="text-base font-medium leading-relaxed text-red-400">Ошибка профиля</div>
-                        <p className="mt-2 text-lg">Не удалось загрузить данные.</p>
+                        <div className="text-base font-medium leading-relaxed text-red-400">Не удалось загрузить профиль</div>
+                        <p className="mt-2 text-lg">Попробуй обновить страницу чуть позже.</p>
                     </div>
                 )}
 
@@ -86,7 +86,7 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
                                     Email не подтвержден
                                     <button
                                         type="button"
-                                        onClick={() => setEmailNotice("Письмо с подтверждением отправлено на текущий email.")}
+                                        onClick={() => setEmailNotice("Письмо с подтверждением уже отправлено на этот адрес.")}
                                         className="h-8 rounded-full border-2 border-white/20 px-3 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                                     >
                                         Отправить письмо
@@ -98,7 +98,7 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
                         <div className="flex flex-wrap gap-3">
                             <button
                                 type="button"
-                                onClick={() => setSaveNotice("Изменения профиля сохранены локально.")}
+                                onClick={() => setSaveNotice("Изменения сохранены.")}
                                 className="h-10 rounded-full border-2 border-white/20 px-4 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                             >
                                 Сохранить
@@ -129,10 +129,10 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
     const [notice, setNotice] = useState("");
 
     const strength = useMemo(() => {
-        if (newPassword.length >= 12) return { width: "w-full", label: "Надежность: высокая" };
-        if (newPassword.length >= 8) return { width: "w-2/3", label: "Надежность: сильная" };
-        if (newPassword.length >= 4) return { width: "w-1/3", label: "Надежность: средняя" };
-        return { width: "w-0", label: "Надежность: слабая" };
+        if (newPassword.length >= 12) return { width: "w-full", label: "Пароль: высокий уровень" };
+        if (newPassword.length >= 8) return { width: "w-2/3", label: "Пароль: хороший уровень" };
+        if (newPassword.length >= 4) return { width: "w-1/3", label: "Пароль: средний уровень" };
+        return { width: "w-0", label: "Пароль: слабый" };
     }, [newPassword]);
 
     const passwordsMatch = confirmPassword.length === 0 || newPassword === confirmPassword;
@@ -146,7 +146,7 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
-        setNotice("Пароль обновлен. Используй новый пароль при следующем входе.");
+        setNotice("Пароль обновлен. В следующий раз входи уже с новым паролем.");
     }
 
     return (
@@ -154,7 +154,7 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
             <div className="flex flex-col gap-6">
                 <div>
                     <h2 className="text-2xl font-black uppercase tracking-tight">Смена пароля</h2>
-                    <p className="text-base font-medium leading-relaxed text-white/40">Сильный пароль = безопасный аккаунт</p>
+                    <p className="text-base font-medium leading-relaxed text-white/40">Обнови пароль, если хочешь усилить защиту аккаунта.</p>
                 </div>
 
                 {state === "loading" && (
@@ -168,8 +168,8 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
 
                 {state === "error" && (
                     <div className="rounded-3xl border-2 border-red-500/40 bg-red-500/10 p-6">
-                        <div className="text-base font-medium leading-relaxed text-red-400">Ошибка пароля</div>
-                        <p className="mt-2 text-lg">Текущий пароль неверный.</p>
+                        <div className="text-base font-medium leading-relaxed text-red-400">Не удалось обновить пароль</div>
+                        <p className="mt-2 text-lg">Проверь текущий пароль и попробуй еще раз.</p>
                     </div>
                 )}
 

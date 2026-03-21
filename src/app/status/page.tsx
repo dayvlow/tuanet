@@ -8,7 +8,7 @@ export default function StatusPage() {
                 <div className="max-w-4xl space-y-10">
                     <div>
                         <h1 className="text-6xl font-black uppercase tracking-tight md:text-8xl">Статус сервиса</h1>
-                        <p className="mt-6 text-xl text-white/60">Текущая доступность основных компонентов TuAnet.</p>
+                        <p className="mt-6 text-xl text-white/60">Здесь можно быстро проверить, все ли в порядке с основными компонентами сервиса.</p>
                     </div>
 
                     <div className="grid gap-6">
@@ -16,7 +16,7 @@ export default function StatusPage() {
                             ["Серверы доступа", "Online"],
                             ["Авторизация", "Online"],
                             ["Выдача ключей", "Online"],
-                            ["Платёжные каналы", "Online"],
+                            ["Поддержка", "Online"],
                         ].map(([label, status]) => (
                             <Card key={label} variant="solid" className="border-zinc-800 p-8">
                                 <div className="flex items-center justify-between gap-4">

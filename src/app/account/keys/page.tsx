@@ -22,7 +22,7 @@ function KeysPageContent() {
     return (
         <AccountShell
             title="Ключи"
-            description="API keys и токены доступа"
+            description="Ключи подключения и управление доступом"
             quickActions={quickActions}
         >
             <KeysTable
