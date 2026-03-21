@@ -42,3 +42,6 @@ next-env.d.ts
 
 # accidental nested repo folder
 tuanet/
+
+# supabase cli temp files
+supabase/.temp/
