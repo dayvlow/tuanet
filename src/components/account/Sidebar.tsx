@@ -45,7 +45,7 @@ export function Sidebar({ variant = "desktop", onNavigate }: SidebarProps) {
                         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black">
                             <UserRound className="h-4 w-4" strokeWidth={2.5} />
                         </span>
-                        <span className="text-xs font-bold uppercase tracking-normal text-white">Алексей</span>
+                        <span className="text-xs font-bold uppercase tracking-normal text-white">Аккаунт</span>
                     </Link>
                 </div>
 
@@ -75,6 +75,13 @@ export function Sidebar({ variant = "desktop", onNavigate }: SidebarProps) {
                 <div className="mt-auto rounded-3xl border-2 border-white/10 bg-black/30 p-4 text-xs uppercase tracking-normal text-white/50">
                     Статус сервиса: <span className="text-white">Online</span>
                 </div>
+                <Link
+                    href="/auth/signout"
+                    onClick={onNavigate}
+                    className="inline-flex items-center justify-center rounded-full border-2 border-white/10 px-4 py-3 text-xs font-bold uppercase tracking-normal text-white/70 transition hover:border-brand hover:bg-brand/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                >
+                    Выйти
+                </Link>
             </div>
         </aside>
     );

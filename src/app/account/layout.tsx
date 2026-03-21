@@ -1,19 +1,22 @@
 import { redirect } from "next/navigation";
-import { AuthFormShell } from "@/components/auth/AuthFormShell";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
-export default async function RegisterPage() {
+export default async function AccountLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
     if (isSupabaseConfigured()) {
         const supabase = await createClient();
         const {
             data: { user },
         } = await supabase.auth.getUser();
 
-        if (user) {
-            redirect("/account");
+        if (!user) {
+            redirect("/login");
         }
     }
 
-    return <AuthFormShell mode="register" />;
+    return children;
 }

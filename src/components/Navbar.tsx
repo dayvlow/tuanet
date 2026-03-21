@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -75,7 +74,6 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <div className="flex items-center gap-4 ml-6">
-                            <ThemeToggle />
                             <Link
                                 href="/login"
                                 className={cn(
@@ -89,7 +87,6 @@ export default function Navbar() {
                     </div>
 
                     <div className="z-50 flex items-center gap-2 md:hidden">
-                        <ThemeToggle className="theme-toggle-mobile" />
                         <button
                             className="flex flex-col gap-1.5 p-2 group"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -152,9 +149,6 @@ export default function Navbar() {
                             transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.4 }}
                             className="flex flex-col gap-6 mt-12 w-full max-w-sm"
                         >
-                            <div className="flex justify-center">
-                                <ThemeToggle />
-                            </div>
                             <Link
                                 href="/login"
                                 onClick={() => setIsMobileMenuOpen(false)}

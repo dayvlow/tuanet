@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 import { accountBalanceFixture } from "@/lib/account-fixtures";
 import { Modal } from "@/components/account/Modal";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface TopbarProps {
     title: string;
@@ -58,7 +57,6 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
                         </div>
                         <div className="flex items-center gap-4">
                             {extra}
-                            <ThemeToggle />
                             <button
                                 type="button"
                                 onClick={() => setIsBalanceModalOpen(true)}

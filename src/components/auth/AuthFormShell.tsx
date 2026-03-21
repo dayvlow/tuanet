@@ -2,21 +2,31 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 interface AuthFormShellProps {
     mode: "login" | "register";
+    nextPath?: string;
 }
 
-export function AuthFormShell({ mode }: AuthFormShellProps) {
+export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProps) {
     const isLogin = mode === "login";
+    const router = useRouter();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [notice, setNotice] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const supabase = useMemo(() => (isSupabaseConfigured() ? createClient() : null), []);
 
     const content = useMemo(() => {
         if (isLogin) {
@@ -27,8 +37,6 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
                 switchText: "Еще нет аккаунта?",
                 switchLabel: "Создать аккаунт",
                 switchHref: "/register",
-                asideTitle: "Все под рукой",
-                asideText: "После входа вы попадаете в кабинет, где можно создавать ключи, управлять устройствами и следить за безопасностью.",
             };
         }
 
@@ -39,24 +47,105 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
             switchText: "Уже есть аккаунт?",
             switchLabel: "Войти",
             switchHref: "/login",
-            asideTitle: "Один аккаунт для всего",
-            asideText: "После регистрации можно установить приложение, создать ключ и подключить нужные устройства по понятному сценарию.",
         };
     }, [isLogin]);
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    function mapAuthError(message: string) {
+        const normalized = message.toLowerCase();
+
+        if (normalized.includes("invalid login credentials")) {
+            return "Проверьте email и пароль. Эти данные не совпали.";
+        }
+
+        if (normalized.includes("email not confirmed")) {
+            return "Подтвердите email и попробуйте войти снова.";
+        }
+
+        if (normalized.includes("user already registered")) {
+            return "Такой email уже используется. Попробуйте войти.";
+        }
+
+        if (normalized.includes("password")) {
+            return "Проверьте пароль и попробуйте еще раз.";
+        }
+
+        return "Сейчас не удалось выполнить запрос. Попробуйте еще раз.";
+    }
+
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setNotice("");
+
+        if (!supabase) {
+            setNotice("Supabase пока не настроен. Добавьте ключи проекта в `.env.local`.");
+            return;
+        }
+
+        if (!email.trim() || !password.trim() || (!isLogin && !name.trim())) {
+            setNotice("Заполните обязательные поля и попробуйте снова.");
+            return;
+        }
 
         if (!isLogin && password !== confirmPassword) {
             setNotice("Проверьте пароль и подтверждение. Они должны совпадать.");
             return;
         }
 
-        setNotice(
-            isLogin
-                ? "Форма входа готова к подключению бэкенда."
-                : "Форма регистрации готова к подключению бэкенда."
-        );
+        if (!isLogin && !acceptedTerms) {
+            setNotice("Подтвердите согласие с условиями, чтобы продолжить.");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            if (isLogin) {
+                const { error } = await supabase.auth.signInWithPassword({
+                    email: email.trim(),
+                    password,
+                });
+
+                if (error) {
+                    setNotice(mapAuthError(error.message));
+                    return;
+                }
+
+                router.push(nextPath);
+                router.refresh();
+                return;
+            }
+
+            const redirectTo =
+                typeof window !== "undefined"
+                    ? `${window.location.origin}/auth/callback?next=/account`
+                    : undefined;
+
+            const { data, error } = await supabase.auth.signUp({
+                email: email.trim(),
+                password,
+                options: {
+                    emailRedirectTo: redirectTo,
+                    data: {
+                        full_name: name.trim(),
+                    },
+                },
+            });
+
+            if (error) {
+                setNotice(mapAuthError(error.message));
+                return;
+            }
+
+            if (data.session) {
+                router.push("/account");
+                router.refresh();
+                return;
+            }
+
+            setNotice("Аккаунт создан. Проверьте почту и подтвердите email, если это требуется в настройках проекта.");
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -70,10 +159,7 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
                             className="min-h-[620px] border-white/10 bg-zinc-900/90 text-white"
                         >
                             <div className="mx-auto flex h-full w-full max-w-xl flex-col justify-center">
-                                <div>
-                                    <div className="inline-flex rounded-full border border-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white/45">
-                                        Туанет
-                                    </div>
+                                <div className="text-center">
                                     <h2 className="text-4xl font-black uppercase tracking-tight md:text-5xl">
                                         {content.title}
                                     </h2>
@@ -90,6 +176,8 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
                                             </label>
                                             <input
                                                 type="text"
+                                                value={name}
+                                                onChange={(event) => setName(event.target.value)}
                                                 placeholder="Как к вам обращаться"
                                                 className="mt-2 h-13 w-full rounded-2xl border-2 border-white/10 bg-black/20 px-4 text-base font-semibold text-white outline-none transition placeholder:text-white/30 focus:border-brand"
                                             />
@@ -102,6 +190,8 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
                                         </label>
                                         <input
                                             type="email"
+                                            value={email}
+                                            onChange={(event) => setEmail(event.target.value)}
                                             placeholder="name@email.com"
                                             className="mt-2 h-13 w-full rounded-2xl border-2 border-white/10 bg-black/20 px-4 text-base font-semibold text-white outline-none transition placeholder:text-white/30 focus:border-brand"
                                         />
@@ -147,7 +237,12 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
                                         </div>
                                     ) : (
                                         <label className="flex items-start gap-3 text-sm leading-relaxed text-white/55">
-                                            <input type="checkbox" className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent" />
+                                            <input
+                                                type="checkbox"
+                                                checked={acceptedTerms}
+                                                onChange={(event) => setAcceptedTerms(event.target.checked)}
+                                                className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent"
+                                            />
                                             Я согласен с условиями использования и политикой конфиденциальности.
                                         </label>
                                     )}
@@ -160,12 +255,14 @@ export function AuthFormShell({ mode }: AuthFormShellProps) {
 
                                     <button
                                         type="submit"
+                                        disabled={isSubmitting}
                                         className={cn(
                                             buttonVariants({ variant: "brand", size: "lg" }),
-                                            "mt-2 h-14 rounded-3xl text-sm font-black uppercase tracking-[0.18em]"
+                                            "mt-2 h-14 rounded-3xl text-sm font-black uppercase tracking-[0.18em]",
+                                            isSubmitting && "pointer-events-none opacity-70"
                                         )}
                                     >
-                                        {content.submitLabel}
+                                        {isSubmitting ? "Подождите..." : content.submitLabel}
                                     </button>
                                 </form>
 
