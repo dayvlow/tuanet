@@ -21,14 +21,13 @@ export default async function SecurityPage({
     return (
         <AccountShell
             title="Безопасность"
-            description="Защита входа и активные сессии"
-            primaryAction={{ label: "Включить 2FA", href: "/account/security#2fa" }}
+            description="Подтверждение доступа и список устройств"
             quickActions={quickActions}
         >
             <SecurityPanel
                 sessions={data.sessions}
                 state={state}
-                initialTwoFactorEnabled={Boolean(data.profile.twoFactorEnabled)}
+                emailVerified={data.profile.emailVerified}
             />
         </AccountShell>
     );

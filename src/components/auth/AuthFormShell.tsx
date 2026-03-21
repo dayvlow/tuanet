@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
@@ -14,9 +14,10 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 interface AuthFormShellProps {
     mode: "login" | "register";
     nextPath?: string;
+    authError?: boolean;
 }
 
-export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProps) {
+export function AuthFormShell({ mode, nextPath = "/account", authError = false }: AuthFormShellProps) {
     const isLogin = mode === "login";
     const router = useRouter();
     const [name, setName] = useState("");
@@ -36,7 +37,7 @@ export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProp
                 submitLabel: "Войти",
                 switchText: "Еще нет аккаунта?",
                 switchLabel: "Создать аккаунт",
-                switchHref: "/register",
+                switchHref: `/register${nextPath !== "/account" ? `?next=${encodeURIComponent(nextPath)}` : ""}`,
             };
         }
 
@@ -46,9 +47,15 @@ export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProp
             submitLabel: "Создать аккаунт",
             switchText: "Уже есть аккаунт?",
             switchLabel: "Войти",
-            switchHref: "/login",
+            switchHref: `/login${nextPath !== "/account" ? `?next=${encodeURIComponent(nextPath)}` : ""}`,
         };
-    }, [isLogin]);
+    }, [isLogin, nextPath]);
+
+    useEffect(() => {
+        if (authError) {
+            setNotice("Не удалось подтвердить вход. Попробуйте снова.");
+        }
+    }, [authError]);
 
     function mapAuthError(message: string) {
         const normalized = message.toLowerCase();

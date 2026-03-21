@@ -13,55 +13,19 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 interface SecurityPanelProps {
     sessions: SessionItem[];
     state?: ModuleState;
-    initialTwoFactorEnabled?: boolean;
+    emailVerified?: boolean;
 }
 
 export function SecurityPanel({
     sessions,
     state = "success",
-    initialTwoFactorEnabled = false,
+    emailVerified = false,
 }: SecurityPanelProps) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [twoFactorEnabled, setTwoFactorEnabled] = useState(initialTwoFactorEnabled);
     const [sessionList, setSessionList] = useState(sessions);
     const [deleteConfirmValue, setDeleteConfirmValue] = useState("");
     const [notice, setNotice] = useState("");
     const [deleteNotice, setDeleteNotice] = useState("");
-
-    async function toggleTwoFactor() {
-        const nextValue = !twoFactorEnabled;
-
-        if (!isSupabaseConfigured()) {
-            setTwoFactorEnabled(nextValue);
-            setNotice(nextValue ? "Двухфакторная защита включена." : "Двухфакторная защита отключена.");
-            return;
-        }
-
-        const supabase = createClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-
-        if (!user) {
-            setNotice("Сессия истекла. Войдите снова.");
-            return;
-        }
-
-        const { error } = await supabase
-            .from("account_profiles")
-            .update({
-                two_factor_enabled: nextValue,
-            })
-            .eq("user_id", user.id);
-
-        if (error) {
-            setNotice("Не удалось обновить настройку. Попробуйте еще раз.");
-            return;
-        }
-
-        setTwoFactorEnabled(nextValue);
-        setNotice(nextValue ? "Двухфакторная защита включена." : "Двухфакторная защита отключена.");
-    }
 
     async function terminateSession(sessionId: string) {
         if (isSupabaseConfigured()) {
@@ -145,28 +109,35 @@ export function SecurityPanel({
 
                 {state === "success" && (
                     <div className="grid gap-6 lg:grid-cols-2">
-                        <div id="2fa" className="rounded-3xl border-2 border-white/10 p-5">
-                            <div className="text-sm font-medium tracking-normal text-white/50">Двухфакторная защита</div>
+                        <div className="rounded-3xl border-2 border-white/10 p-5">
+                            <div className="text-sm font-medium tracking-normal text-white/50">Подтверждение аккаунта</div>
                             <div className="mt-3 flex items-center justify-between">
                                 <div>
-                                    <div className="text-lg font-bold">{twoFactorEnabled ? "2FA включена" : "2FA отключена"}</div>
-                                    <p className="text-sm text-white/60">Включи дополнительное подтверждение входа.</p>
+                                    <div className="text-lg font-bold">
+                                        {emailVerified ? "Email подтвержден" : "Email не подтвержден"}
+                                    </div>
+                                    <p className="text-sm text-white/60">
+                                        {emailVerified
+                                            ? "Аккаунт уже готов к обычному входу."
+                                            : "Подтвердите почту, чтобы не потерять доступ к аккаунту."}
+                                    </p>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => void toggleTwoFactor()}
-                                    className="h-9 rounded-full border-2 border-white/20 px-3 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                                <Link
+                                    href="/account/profile"
+                                    className="inline-flex h-9 items-center rounded-full border-2 border-white/20 px-3 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                                 >
-                                    {twoFactorEnabled ? "Отключить" : "Включить"}
-                                </button>
+                                    {emailVerified ? "Открыть профиль" : "Проверить профиль"}
+                                </Link>
                             </div>
                             <div className="mt-4 rounded-2xl border-2 border-white/10 bg-white/5 p-3 text-xs uppercase tracking-normal text-white/50">
-                                {twoFactorEnabled ? "После настройки можно будет сохранить резервные коды." : "Резервные коды появятся после активации."}
+                                {emailVerified
+                                    ? "Если смените почту, подтверждение потребуется снова."
+                                    : "Письмо для подтверждения можно отправить из профиля."}
                             </div>
                         </div>
 
                         <div className="rounded-3xl border-2 border-white/10 p-5">
-                            <div className="text-sm font-medium tracking-normal text-white/50">Активные сессии</div>
+                            <div className="text-sm font-medium tracking-normal text-white/50">Устройства в кабинете</div>
                             <div className="mt-4 space-y-3">
                                 {sessionList.map((session) => (
                                     <div key={session.id} className="flex items-center justify-between gap-4">
@@ -176,7 +147,7 @@ export function SecurityPanel({
                                         </div>
                                         {session.current ? (
                                             <span className="rounded-full border-2 border-white/20 px-3 py-1 text-xs font-bold uppercase tracking-normal text-white/60">
-                                                Текущая
+                                                Текущее
                                             </span>
                                         ) : (
                                             <button
@@ -184,12 +155,12 @@ export function SecurityPanel({
                                                 onClick={() => void terminateSession(session.id)}
                                                 className="rounded-full border-2 border-white/20 px-3 py-1 text-xs font-bold uppercase tracking-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                                             >
-                                                Завершить
+                                                Убрать
                                             </button>
                                         )}
                                     </div>
                                 ))}
-                                {sessionList.length === 0 && <div className="text-sm text-white/50">Дополнительных сессий сейчас нет.</div>}
+                                {sessionList.length === 0 && <div className="text-sm text-white/50">Список устройств пока пуст.</div>}
                             </div>
                             <button
                                 type="button"
@@ -199,7 +170,7 @@ export function SecurityPanel({
                                     "mt-4 h-9 px-3 text-xs uppercase tracking-normal border-2"
                                 )}
                             >
-                                Завершить все
+                                Очистить список
                             </button>
                         </div>
 

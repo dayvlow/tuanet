@@ -15,7 +15,7 @@ export default function StatusPage() {
                         {[
                             ["Серверы доступа", "Online"],
                             ["Авторизация", "Online"],
-                            ["Выдача ключей", "Online"],
+                            ["Выдача ключей", "Подготовка"],
                             ["Поддержка", "Online"],
                         ].map(([label, status]) => (
                             <Card key={label} variant="solid" className="border-zinc-800 p-8">
