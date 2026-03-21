@@ -1,43 +1,117 @@
 "use client";
 
 import { useState } from "react";
-import { SessionItem } from "@/lib/account-fixtures";
+import { SessionItem } from "@/lib/account-types";
 import { buttonVariants } from "@/components/ui/Button";
 import { Modal } from "@/components/account/Modal";
 import { cn } from "@/lib/utils";
 import { ModuleState } from "@/components/account/KeysTable";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 interface SecurityPanelProps {
     sessions: SessionItem[];
     state?: ModuleState;
+    initialTwoFactorEnabled?: boolean;
 }
 
-export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProps) {
+export function SecurityPanel({
+    sessions,
+    state = "success",
+    initialTwoFactorEnabled = false,
+}: SecurityPanelProps) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+    const [twoFactorEnabled, setTwoFactorEnabled] = useState(initialTwoFactorEnabled);
     const [sessionList, setSessionList] = useState(sessions);
     const [deleteConfirmValue, setDeleteConfirmValue] = useState("");
     const [notice, setNotice] = useState("");
     const [deleteNotice, setDeleteNotice] = useState("");
 
-    function toggleTwoFactor() {
-        setTwoFactorEnabled((current) => !current);
-        setNotice(twoFactorEnabled ? "Двухфакторная защита отключена." : "Двухфакторная защита включена.");
+    async function toggleTwoFactor() {
+        const nextValue = !twoFactorEnabled;
+
+        if (!isSupabaseConfigured()) {
+            setTwoFactorEnabled(nextValue);
+            setNotice(nextValue ? "Двухфакторная защита включена." : "Двухфакторная защита отключена.");
+            return;
+        }
+
+        const supabase = createClient();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+            setNotice("Сессия истекла. Войдите снова.");
+            return;
+        }
+
+        const { error } = await supabase
+            .from("account_profiles")
+            .update({
+                two_factor_enabled: nextValue,
+            })
+            .eq("user_id", user.id);
+
+        if (error) {
+            setNotice("Не удалось обновить настройку. Попробуйте еще раз.");
+            return;
+        }
+
+        setTwoFactorEnabled(nextValue);
+        setNotice(nextValue ? "Двухфакторная защита включена." : "Двухфакторная защита отключена.");
     }
 
-    function terminateSession(sessionId: string) {
+    async function terminateSession(sessionId: string) {
+        if (isSupabaseConfigured()) {
+            const supabase = createClient();
+            const { error } = await supabase.from("account_sessions").delete().eq("id", sessionId);
+
+            if (error) {
+                setNotice("Не удалось завершить сессию. Попробуйте еще раз.");
+                return;
+            }
+        }
+
         setSessionList((current) => current.filter((session) => session.id !== sessionId));
         setNotice("Сессия завершена.");
     }
 
-    function terminateAll() {
+    async function terminateAll() {
+        if (isSupabaseConfigured()) {
+            const supabase = createClient();
+            const { error } = await supabase
+                .from("account_sessions")
+                .delete()
+                .eq("is_current", false);
+
+            if (error) {
+                setNotice("Не удалось завершить дополнительные сессии. Попробуйте еще раз.");
+                return;
+            }
+        }
+
         setSessionList((current) => current.filter((session) => session.current));
         setNotice("Все дополнительные сессии завершены.");
     }
 
-    function requestDeleteAccount() {
-        setDeleteNotice("Запрос подготовлен. Для завершения удаления свяжись с поддержкой.");
+    async function requestDeleteAccount() {
+        if (isSupabaseConfigured()) {
+            const supabase = createClient();
+            const { error } = await supabase.from("account_deletion_requests").insert({
+                reason: "DELETE",
+            });
+
+            if (error) {
+                setDeleteNotice("Не удалось отправить запрос. Попробуйте еще раз чуть позже.");
+                setDeleteConfirmValue("");
+                setShowDeleteModal(false);
+                return;
+            }
+        }
+
+        setDeleteNotice("Запрос подготовлен. Для завершения удаления свяжитесь с поддержкой.");
         setDeleteConfirmValue("");
         setShowDeleteModal(false);
     }
@@ -80,7 +154,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={toggleTwoFactor}
+                                    onClick={() => void toggleTwoFactor()}
                                     className="h-9 rounded-full border-2 border-white/20 px-3 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                                 >
                                     {twoFactorEnabled ? "Отключить" : "Включить"}
@@ -107,7 +181,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                                         ) : (
                                             <button
                                                 type="button"
-                                                onClick={() => terminateSession(session.id)}
+                                                onClick={() => void terminateSession(session.id)}
                                                 className="rounded-full border-2 border-white/20 px-3 py-1 text-xs font-bold uppercase tracking-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                                             >
                                                 Завершить
@@ -119,7 +193,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                             </div>
                             <button
                                 type="button"
-                                onClick={terminateAll}
+                                onClick={() => void terminateAll()}
                                 className={cn(
                                     buttonVariants({ variant: "outline", size: "sm" }),
                                     "mt-4 h-9 px-3 text-xs uppercase tracking-normal border-2"
@@ -171,7 +245,7 @@ export function SecurityPanel({ sessions, state = "success" }: SecurityPanelProp
                     <div className="flex flex-wrap gap-3">
                         <button
                             type="button"
-                            onClick={requestDeleteAccount}
+                            onClick={() => void requestDeleteAccount()}
                             disabled={deleteConfirmValue !== "DELETE"}
                             className={cn(
                                 buttonVariants({ variant: "brand", size: "sm" }),

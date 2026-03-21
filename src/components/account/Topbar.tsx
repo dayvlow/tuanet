@@ -1,10 +1,14 @@
 "use client";
 
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { accountBalanceFixture } from "@/lib/account-fixtures";
 import { Modal } from "@/components/account/Modal";
+import { AccountBalanceInfo } from "@/lib/account-types";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { mapBalanceRecord } from "@/lib/account-utils";
 
 interface TopbarProps {
     title: string;
@@ -18,6 +22,11 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
     const topbarRef = useRef<HTMLDivElement | null>(null);
     const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
     const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+    const [balance, setBalance] = useState<AccountBalanceInfo>(accountBalanceFixture);
+    const supabase = useMemo(
+        () => (isSupabaseConfigured() ? createClient() : null),
+        []
+    );
 
     useEffect(() => {
         function setTopbarHeight() {
@@ -31,6 +40,44 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
         window.addEventListener("resize", setTopbarHeight);
         return () => window.removeEventListener("resize", setTopbarHeight);
     }, []);
+
+    useEffect(() => {
+        const client = supabase;
+
+        if (!client) {
+            return;
+        }
+
+        const supabaseClient = client;
+
+        let cancelled = false;
+
+        async function loadBalance() {
+            const {
+                data: { user },
+            } = await supabaseClient.auth.getUser();
+
+            if (!user) {
+                return;
+            }
+
+            const { data } = await supabaseClient
+                .from("account_profiles")
+                .select("balance_amount, balance_currency, balance_updated_at")
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+            if (!cancelled && data) {
+                setBalance(mapBalanceRecord(data, accountBalanceFixture));
+            }
+        }
+
+        void loadBalance();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [supabase]);
 
     return (
         <>
@@ -61,10 +108,10 @@ export function Topbar({ title, onMenuClick, extra }: TopbarProps) {
                                 type="button"
                                 onClick={() => setIsBalanceModalOpen(true)}
                                 className="flex items-center rounded-full border-2 border-white/60 px-3 py-1.5 text-white transition hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:px-4 sm:py-2"
-                                aria-label={`Баланс аккаунта ${accountBalanceFixture.amount} ${accountBalanceFixture.currency}. Открыт раздел ${title}.`}
+                                aria-label={`Баланс аккаунта ${balance.amount} ${balance.currency}. Открыт раздел ${title}.`}
                             >
                                 <span className="text-sm font-black tracking-tight sm:text-base lg:text-lg">
-                                    Баланс: {accountBalanceFixture.amount} {accountBalanceFixture.currency}
+                                    Баланс: {balance.amount} {balance.currency}
                                 </span>
                             </button>
                         </div>

@@ -1,39 +1,4 @@
-export type KeyStatus = "active" | "revoked" | "expiring" | "rotating";
-
-export interface KeyItem {
-    id: string;
-    name: string;
-    type: "API" | "Device" | "Access";
-    last4: string;
-    createdAt: string;
-    lastActive: string;
-    status: KeyStatus;
-    expiresAt?: string;
-    deviceLimit?: number;
-    sessionLimit?: number;
-    affectedDevices?: string[];
-}
-
-export interface SessionItem {
-    id: string;
-    device: string;
-    location: string;
-    lastActive: string;
-    current?: boolean;
-}
-
-export interface ProfileInfo {
-    name: string;
-    birthDate: string;
-    email: string;
-    emailVerified: boolean;
-}
-
-export interface AccountBalanceInfo {
-    amount: string;
-    currency: string;
-    updatedAt: string;
-}
+import { AccountBalanceInfo, KeyItem, ProfileInfo, SessionItem } from "@/lib/account-types";
 
 export const keysFixture: KeyItem[] = [
     {

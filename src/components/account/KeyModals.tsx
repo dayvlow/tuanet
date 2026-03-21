@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { KeyItem } from "@/lib/account-fixtures";
+import { CreateKeyInput, KeyItem } from "@/lib/account-types";
 import { Modal } from "@/components/account/Modal";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -9,11 +9,7 @@ import { cn } from "@/lib/utils";
 interface KeyCreateModalProps {
     open: boolean;
     onClose: () => void;
-    onCreateKey?: (key: KeyItem) => void;
-}
-
-function generateLast4() {
-    return Math.random().toString(16).slice(2, 6).toUpperCase();
+    onCreateKey?: (input: CreateKeyInput) => Promise<KeyItem> | KeyItem;
 }
 
 export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalProps) {
@@ -23,7 +19,9 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
     const [deviceName, setDeviceName] = useState("");
     const [region, setRegion] = useState("Германия");
     const [deviceType, setDeviceType] = useState("Windows");
-    const [keyType, setKeyType] = useState("VPN");
+    const [keyType, setKeyType] = useState<"VPN" | "VPN + белые списки">("VPN");
+    const [notice, setNotice] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function resetState() {
         setCreated(false);
@@ -33,6 +31,8 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
         setRegion("Германия");
         setDeviceType("Windows");
         setKeyType("VPN");
+        setNotice("");
+        setIsSubmitting(false);
     }
 
     function handleClose() {
@@ -40,25 +40,31 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
         onClose();
     }
 
-    function handleCreate() {
-        const last4 = generateLast4();
-        const normalizedName = deviceName.trim() || `${deviceType} ${region}`;
-        const value = `tua_${last4}_${region.slice(0, 2).toUpperCase()}_${deviceType.slice(0, 2).toUpperCase()}`;
+    async function handleCreate() {
+        setNotice("");
+        setIsSubmitting(true);
 
-        onCreateKey?.({
-            id: `key_${Date.now()}`,
-            name: normalizedName,
-            type: keyType === "VPN" ? "Device" : "API",
-            last4,
-            createdAt: "Сегодня",
-            lastActive: "Не использовался",
-            status: "active",
-            affectedDevices: [normalizedName],
-        });
+        try {
+            const key = await onCreateKey?.({
+                deviceName,
+                region,
+                deviceType,
+                keyType,
+            });
 
-        setGeneratedKey(value);
-        setCreated(true);
-        setCopied(false);
+            if (!key) {
+                setNotice("Не удалось создать ключ. Попробуйте еще раз.");
+                return;
+            }
+
+            setGeneratedKey(key.token ?? `tuaanet-${key.id}-${key.last4}`);
+            setCreated(true);
+            setCopied(false);
+        } catch {
+            setNotice("Не удалось создать ключ. Попробуйте еще раз.");
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     async function handleCopy() {
@@ -77,12 +83,14 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
                         <button
                             type="button"
                             onClick={handleCreate}
+                            disabled={isSubmitting}
                             className={cn(
                                 buttonVariants({ variant: "brand", size: "sm" }),
-                                "h-11 px-6 text-xs uppercase tracking-normal"
+                                "h-11 px-6 text-xs uppercase tracking-normal",
+                                isSubmitting && "pointer-events-none opacity-60"
                             )}
                         >
-                            Создать ключ
+                            {isSubmitting ? "Создаем..." : "Создать ключ"}
                         </button>
                     ) : (
                         <button
@@ -101,6 +109,11 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
         >
             {!created ? (
                 <div className="grid gap-4">
+                    {notice && (
+                        <div className="rounded-2xl border-2 border-red-500/20 bg-red-500/10 p-4 text-sm text-red-600">
+                            {notice}
+                        </div>
+                    )}
                     <div>
                         <label className="block text-xs font-bold uppercase tracking-normal text-black/50">Имя устройства</label>
                         <input
@@ -145,7 +158,9 @@ export function KeyCreateModal({ open, onClose, onCreateKey }: KeyCreateModalPro
                         <label className="block text-xs font-bold uppercase tracking-normal text-black/50">Тип ключа</label>
                         <select
                             value={keyType}
-                            onChange={(event) => setKeyType(event.target.value)}
+                            onChange={(event) =>
+                                setKeyType(event.target.value as "VPN" | "VPN + белые списки")
+                            }
                             className="mt-2 h-12 w-full rounded-2xl border-2 border-black/20 px-4 text-xs font-bold uppercase tracking-normal"
                         >
                             <option>VPN</option>
@@ -185,10 +200,13 @@ interface KeyRevokeModalProps {
     open: boolean;
     onClose: () => void;
     keyItem?: KeyItem | null;
-    onConfirm?: (keyItem: KeyItem) => void;
+    onConfirm?: (keyItem: KeyItem) => Promise<void> | void;
 }
 
 export function KeyRevokeModal({ open, onClose, keyItem, onConfirm }: KeyRevokeModalProps) {
+    const [notice, setNotice] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     return (
         <Modal
             open={open}
@@ -198,18 +216,30 @@ export function KeyRevokeModal({ open, onClose, keyItem, onConfirm }: KeyRevokeM
                 <div className="flex flex-wrap gap-3">
                     <button
                         type="button"
-                        onClick={() => {
+                        onClick={async () => {
+                            setNotice("");
+                            setIsSubmitting(true);
+
                             if (keyItem) {
-                                onConfirm?.(keyItem);
+                                try {
+                                    await onConfirm?.(keyItem);
+                                } catch {
+                                    setNotice("Не удалось отозвать ключ. Попробуйте еще раз.");
+                                    setIsSubmitting(false);
+                                    return;
+                                }
                             }
+                            setIsSubmitting(false);
                             onClose();
                         }}
+                        disabled={isSubmitting}
                         className={cn(
                             buttonVariants({ variant: "brand", size: "sm" }),
-                            "h-11 px-6 text-xs uppercase tracking-normal"
+                            "h-11 px-6 text-xs uppercase tracking-normal",
+                            isSubmitting && "pointer-events-none opacity-60"
                         )}
                     >
-                        Подтвердить отзыв
+                        {isSubmitting ? "Обновляем..." : "Подтвердить отзыв"}
                     </button>
                     <button
                         type="button"
@@ -225,6 +255,11 @@ export function KeyRevokeModal({ open, onClose, keyItem, onConfirm }: KeyRevokeM
             }
         >
             <div className="space-y-4">
+                {notice && (
+                    <div className="rounded-2xl border-2 border-red-500/20 bg-red-500/10 p-4 text-sm text-red-600">
+                        {notice}
+                    </div>
+                )}
                 <p className="text-lg">
                     Ключ <span className="font-bold">{keyItem?.name ?? ""}</span> будет отключен. Устройства ниже потеряют доступ.
                 </p>

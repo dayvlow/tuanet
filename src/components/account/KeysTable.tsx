@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { KeyItem, KeyStatus } from "@/lib/account-fixtures";
+import { KeyItem, KeyStatus } from "@/lib/account-types";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -63,7 +63,7 @@ export function KeysTable({ keys, state = "success", onCreate, onRevoke }: KeysT
     }, [activeFilter, keys, search, sortMode]);
 
     async function handleCopy(key: KeyItem) {
-        const value = `tuaanet-${key.id}-${key.last4}`;
+        const value = key.token ?? `tuaanet-${key.id}-${key.last4}`;
         await navigator.clipboard.writeText(value);
         setCopiedKeyId(key.id);
         window.setTimeout(() => setCopiedKeyId((current) => (current === key.id ? null : current)), 1500);

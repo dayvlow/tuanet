@@ -75,8 +75,9 @@ export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProp
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setNotice("");
+        const client = supabase;
 
-        if (!supabase) {
+        if (!client) {
             setNotice("Supabase пока не настроен. Добавьте ключи проекта в `.env.local`.");
             return;
         }
@@ -100,7 +101,7 @@ export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProp
 
         try {
             if (isLogin) {
-                const { error } = await supabase.auth.signInWithPassword({
+                const { error } = await client.auth.signInWithPassword({
                     email: email.trim(),
                     password,
                 });
@@ -120,7 +121,7 @@ export function AuthFormShell({ mode, nextPath = "/account" }: AuthFormShellProp
                     ? `${window.location.origin}/auth/callback?next=/account`
                     : undefined;
 
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await client.auth.signUp({
                 email: email.trim(),
                 password,
                 options: {

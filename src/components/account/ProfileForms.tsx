@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ProfileInfo } from "@/lib/account-fixtures";
+import { ProfileInfo } from "@/lib/account-types";
 import { ModuleState } from "@/components/account/KeysTable";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 interface ProfileFormProps {
     profile: ProfileInfo;
@@ -16,12 +18,101 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
     const [email, setEmail] = useState(profile.email);
     const [saveNotice, setSaveNotice] = useState("");
     const [emailNotice, setEmailNotice] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
 
     function resetForm() {
         setName(profile.name);
         setBirthDate(profile.birthDate);
         setEmail(profile.email);
         setSaveNotice("");
+    }
+
+    async function handleSave() {
+        if (!isSupabaseConfigured()) {
+            setSaveNotice("Изменения сохранены локально.");
+            return;
+        }
+
+        setIsSaving(true);
+        setSaveNotice("");
+        setEmailNotice("");
+
+        try {
+            const supabase = createClient();
+            const {
+                data: { user },
+            } = await supabase.auth.getUser();
+
+            if (!user) {
+                setSaveNotice("Сессия истекла. Войдите снова.");
+                return;
+            }
+
+            const updatePayload: {
+                email?: string;
+                data?: { full_name: string; name: string };
+            } = {
+                data: {
+                    full_name: name.trim(),
+                    name: name.trim(),
+                },
+            };
+
+            if (email.trim() && email.trim() !== profile.email) {
+                updatePayload.email = email.trim();
+            }
+
+            const { error: userError } = await supabase.auth.updateUser(updatePayload);
+            if (userError) {
+                setSaveNotice("Не удалось обновить аккаунт. Проверьте данные и попробуйте еще раз.");
+                return;
+            }
+
+            const { error: profileError } = await supabase
+                .from("account_profiles")
+                .upsert(
+                    {
+                        user_id: user.id,
+                        full_name: name.trim(),
+                        birth_date: birthDate || null,
+                        email: email.trim(),
+                        email_verified: profile.emailVerified,
+                    },
+                    { onConflict: "user_id" }
+                );
+
+            if (profileError) {
+                setSaveNotice("Не удалось сохранить профиль. Попробуйте еще раз.");
+                return;
+            }
+
+            setSaveNotice(
+                email.trim() !== profile.email
+                    ? "Изменения сохранены. Новый email нужно подтвердить письмом."
+                    : "Изменения сохранены."
+            );
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
+    async function handleSendVerification() {
+        if (!isSupabaseConfigured()) {
+            setEmailNotice("Функция станет доступна после подключения Supabase.");
+            return;
+        }
+
+        const supabase = createClient();
+        const { error } = await supabase.auth.resend({
+            type: "signup",
+            email: email.trim(),
+        });
+
+        setEmailNotice(
+            error
+                ? "Не удалось отправить письмо. Попробуйте еще раз чуть позже."
+                : "Письмо с подтверждением уже отправлено на этот адрес."
+        );
     }
 
     return (
@@ -86,7 +177,7 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
                                     Email не подтвержден
                                     <button
                                         type="button"
-                                        onClick={() => setEmailNotice("Письмо с подтверждением уже отправлено на этот адрес.")}
+                                        onClick={() => void handleSendVerification()}
                                         className="h-8 rounded-full border-2 border-white/20 px-3 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                                     >
                                         Отправить письмо
@@ -98,10 +189,11 @@ export function ProfileForm({ profile, state = "success" }: ProfileFormProps) {
                         <div className="flex flex-wrap gap-3">
                             <button
                                 type="button"
-                                onClick={() => setSaveNotice("Изменения сохранены.")}
+                                onClick={() => void handleSave()}
+                                disabled={isSaving}
                                 className="h-10 rounded-full border-2 border-white/20 px-4 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                             >
-                                Сохранить
+                                {isSaving ? "Сохраняем..." : "Сохранить"}
                             </button>
                             <button
                                 type="button"
@@ -127,6 +219,7 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [notice, setNotice] = useState("");
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const strength = useMemo(() => {
         if (newPassword.length >= 12) return { width: "w-full", label: "Пароль: высокий уровень" };
@@ -137,16 +230,59 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
 
     const passwordsMatch = confirmPassword.length === 0 || newPassword === confirmPassword;
 
-    function handleUpdatePassword() {
+    async function handleUpdatePassword() {
         if (!currentPassword || newPassword.length < 8 || newPassword !== confirmPassword) {
             setNotice("Проверь текущий пароль и убедись, что новый пароль совпадает с подтверждением.");
             return;
         }
 
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-        setNotice("Пароль обновлен. В следующий раз входи уже с новым паролем.");
+        if (!isSupabaseConfigured()) {
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+            setNotice("Пароль обновлен.");
+            return;
+        }
+
+        setIsUpdating(true);
+
+        try {
+            const supabase = createClient();
+            const {
+                data: { user },
+            } = await supabase.auth.getUser();
+
+            if (!user?.email) {
+                setNotice("Сессия истекла. Войдите снова.");
+                return;
+            }
+
+            const { error: loginError } = await supabase.auth.signInWithPassword({
+                email: user.email,
+                password: currentPassword,
+            });
+
+            if (loginError) {
+                setNotice("Текущий пароль введен неверно.");
+                return;
+            }
+
+            const { error: updateError } = await supabase.auth.updateUser({
+                password: newPassword,
+            });
+
+            if (updateError) {
+                setNotice("Не удалось обновить пароль. Попробуйте еще раз.");
+                return;
+            }
+
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+            setNotice("Пароль обновлен. В следующий раз входите уже с новым паролем.");
+        } finally {
+            setIsUpdating(false);
+        }
     }
 
     return (
@@ -217,10 +353,11 @@ export function PasswordChangeForm({ state = "success" }: PasswordChangeFormProp
                         </div>
                         <button
                             type="button"
-                            onClick={handleUpdatePassword}
+                            onClick={() => void handleUpdatePassword()}
+                            disabled={isUpdating}
                             className="h-10 rounded-full border-2 border-white/20 px-4 text-xs font-bold uppercase tracking-normal text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                         >
-                            Обновить пароль
+                            {isUpdating ? "Обновляем..." : "Обновить пароль"}
                         </button>
                     </div>
                 )}

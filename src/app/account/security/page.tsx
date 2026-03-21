@@ -1,6 +1,6 @@
 import { AccountShell } from "@/components/account/AccountShell";
 import { SecurityPanel } from "@/components/account/SecurityPanel";
-import { sessionsFixture } from "@/lib/account-fixtures";
+import { getAccountData } from "@/lib/supabase/account";
 
 const quickActions = [
     { label: "Создать ключ", href: "/account/keys" },
@@ -14,7 +14,9 @@ export default async function SecurityPage({
     searchParams: Promise<{ state?: string }>;
 }) {
     const params = await searchParams;
-    const state = (params.state ?? "success") as "success" | "loading" | "empty" | "error";
+    const data = await getAccountData();
+    const forcedState = (params.state ?? "success") as "success" | "loading" | "empty" | "error";
+    const state = forcedState === "success" && data.errors.sessions ? "error" : forcedState;
 
     return (
         <AccountShell
@@ -23,7 +25,11 @@ export default async function SecurityPage({
             primaryAction={{ label: "Включить 2FA", href: "/account/security#2fa" }}
             quickActions={quickActions}
         >
-            <SecurityPanel sessions={sessionsFixture} state={state} />
+            <SecurityPanel
+                sessions={data.sessions}
+                state={state}
+                initialTwoFactorEnabled={Boolean(data.profile.twoFactorEnabled)}
+            />
         </AccountShell>
     );
 }
