@@ -183,7 +183,7 @@ export default function Home() {
         className={`${sectionGap} flex flex-col items-center justify-center px-6 md:px-12`}
       >
           <div className="flex flex-col lg:flex-row gap-20 items-center justify-center w-full">
-          <div className="w-[450px] flex-none min-h-[500px]">
+          <div className="w-112.5 flex-none min-h-125">
             <Reveal>
               <div className="mb-12 border-l-8 border-brand pl-8 text-left">
                 <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">FAQ</h2>
@@ -200,9 +200,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="lg:w-[450px] w-full shrink-0">
+          <div className="lg:w-112.5 w-full shrink-0">
             <Reveal>
-              <Card variant="solid" padding="lg" className="bg-brand text-black border-none relative overflow-visible h-full flex flex-col items-center text-center justify-center min-h-[500px]">
+              <Card variant="solid" padding="lg" className="bg-brand text-black border-none relative overflow-visible h-full flex flex-col items-center text-center justify-center min-h-125">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 <div className="relative z-10 flex flex-col items-center gap-10">
                   <div className="max-w-xs">
