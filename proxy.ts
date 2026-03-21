@@ -1,26 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { isSupabaseConfigured, supabasePublishableKey, supabaseUrl } from "@/lib/supabase/config";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/utils/supabase/middleware";
 
 export async function proxy(request: NextRequest) {
-    if (!isSupabaseConfigured() || !supabaseUrl || !supabasePublishableKey) {
+    if (!isSupabaseConfigured()) {
         return NextResponse.next({ request });
     }
 
-    let response = NextResponse.next({ request });
-
-    const supabase = createServerClient(supabaseUrl, supabasePublishableKey, {
-        cookies: {
-            getAll() {
-                return request.cookies.getAll();
-            },
-            setAll(cookiesToSet) {
-                cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-                response = NextResponse.next({ request });
-                cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
-            },
-        },
-    });
+    const { supabase, response } = createClient(request);
 
     const {
         data: { user },
